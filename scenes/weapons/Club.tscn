@@ -1,0 +1,62 @@
+[gd_scene load_steps=9 format=3 uid="uid://cruhrsd61vrx3"]
+
+[ext_resource type="PackedScene" uid="uid://e70u208u72fq" path="res://assets/models/weapons/Club.blend" id="1_s2t1d"]
+[ext_resource type="Texture2D" uid="uid://7oswse7ojddj" path="res://assets/textures/particles/star_02.png" id="2_jxam1"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_2q1qb"]
+height = 1.0
+radius = 0.075
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_s5lhr"]
+transparency = 1
+emission_enabled = true
+emission = Color(1, 0.662745, 0, 1)
+emission_energy_multiplier = 16.0
+emission_texture = ExtResource("2_jxam1")
+use_particle_trails = true
+
+[sub_resource type="Curve" id="Curve_xitiv"]
+_data = [Vector2(0, 0), 0.0, 1.68865, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_g6cv4"]
+curve = SubResource("Curve_xitiv")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_bq6w8"]
+lifetime_randomness = 0.53
+direction = Vector3(0, 1, -1)
+spread = 30.0
+initial_velocity_min = 1.0
+initial_velocity_max = 3.0
+gravity = Vector3(0, -4, 0)
+scale_curve = SubResource("CurveTexture_g6cv4")
+
+[sub_resource type="RibbonTrailMesh" id="RibbonTrailMesh_882s8"]
+size = 0.1
+
+[node name="Club" instance=ExtResource("1_s2t1d")]
+collision_layer = 17
+damage = 4
+attack_speed = 0.8
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+shape = SubResource("CylinderShape3D_2q1qb")
+
+[node name="RayCast3D" type="RayCast3D" parent="." index="2"]
+enabled = false
+target_position = Vector3(0, 0.9, 0)
+collide_with_areas = true
+
+[node name="HitParticles" type="GPUParticles3D" parent="." index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+material_override = SubResource("StandardMaterial3D_s5lhr")
+emitting = false
+amount = 16
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.9
+trail_enabled = true
+trail_lifetime = 0.1
+process_material = SubResource("ParticleProcessMaterial_bq6w8")
+draw_pass_1 = SubResource("RibbonTrailMesh_882s8")

@@ -1,0 +1,27 @@
+[gd_scene load_steps=5 format=3 uid="uid://71auxx3i1kdv"]
+
+[ext_resource type="Script" path="res://test/TestDeath.gd" id="2"]
+[ext_resource type="PackedScene" uid="uid://dmier7ritk3sr" path="res://scenes/player/PlayerModel.tscn" id="2_6p7b3"]
+
+[sub_resource type="PlaneMesh" id="1"]
+size = Vector2(6, 6)
+
+[sub_resource type="ConcavePolygonShape3D" id="2"]
+data = PackedVector3Array(3, 0, 3, -3, 0, 3, 3, 0, -3, -3, 0, 3, -3, 0, -3, 3, 0, -3)
+
+[node name="RagDollTest" type="Node3D"]
+script = ExtResource("2")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 4)
+current = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("1")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+shape = SubResource("2")
+
+[node name="PlayerModel" parent="." instance=ExtResource("2_6p7b3")]

@@ -1,0 +1,8 @@
+.import/
+editor
+build/
+*.so
+*.dll
+*.dylib
+templates/
+.godot/

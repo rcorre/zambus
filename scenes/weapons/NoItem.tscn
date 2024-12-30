@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://dnxq0dyfefnd5"]
+
+[ext_resource type="Script" path="res://scenes/weapons/MeleeWeapon.gd" id="1_5kff5"]
+
+[node name="NoItem" type="Area3D"]
+script = ExtResource("1_5kff5")
+
+[node name="RayCast3D" type="RayCast3D" parent="."]
+enabled = false
+target_position = Vector3(0, 0, 0)
+collide_with_bodies = false

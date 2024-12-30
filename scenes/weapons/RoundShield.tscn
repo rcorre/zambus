@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3c38bgcsq2sv"]
+
+[ext_resource type="PackedScene" uid="uid://bjo0uuy1rgqf6" path="res://assets/models/weapons/RoundShield.blend" id="1_53wet"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_r5gve"]
+height = 0.0906243
+radius = 0.315481
+
+[node name="RoundShield" instance=ExtResource("1_53wet")]
+collision_layer = 9
+hand = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="1"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0.0733063, 0, 0)
+shape = SubResource("CylinderShape3D_r5gve")
+
+[node name="RayCast3D" type="RayCast3D" parent="." index="2"]
+target_position = Vector3(0.3, 0, 0)

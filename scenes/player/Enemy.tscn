@@ -1,0 +1,79 @@
+[gd_scene load_steps=15 format=3 uid="uid://dxr4brjoeynwo"]
+
+[ext_resource type="Script" path="res://scenes/NPC.gd" id="1_uw31n"]
+[ext_resource type="AudioStream" uid="uid://1juityjqfn3f" path="res://assets/sounds/footstep.wav" id="3_7fjud"]
+[ext_resource type="AudioStream" uid="uid://mejnyrakhu2t" path="res://assets/sounds/jump.wav" id="4_h3eei"]
+[ext_resource type="AudioStream" uid="uid://h4wu4iwecsbu" path="res://assets/sounds/land.wav" id="5_5suk5"]
+[ext_resource type="AudioStream" uid="uid://hpp0ouqhisvs" path="res://assets/sounds/hit.wav" id="6_gffeo"]
+[ext_resource type="AudioStream" uid="uid://r5wchw8f2wie" path="res://assets/sounds/metal_hit.wav" id="7_kp1t7"]
+[ext_resource type="AudioStream" uid="uid://cqnyr30whgdev" path="res://assets/sounds/swing.wav" id="8_l11wn"]
+[ext_resource type="PackedScene" uid="uid://c3cmp5mnn2g8t" path="res://scenes/enemies/SkeletonModel.tscn" id="8_xnvng"]
+
+[sub_resource type="CapsuleShape3D" id="2"]
+resource_local_to_scene = true
+height = 1.8
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_8dr1x"]
+resource_local_to_scene = true
+radius = 0.3
+height = 1.2
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_62qae"]
+streams_count = 1
+stream_0/stream = ExtResource("3_7fjud")
+stream_0/weight = 1.0
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_17ciy"]
+streams_count = 1
+stream_0/stream = ExtResource("6_gffeo")
+stream_0/weight = 1.0
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_eyjex"]
+streams_count = 1
+stream_0/stream = ExtResource("7_kp1t7")
+stream_0/weight = 1.0
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_o533x"]
+streams_count = 1
+stream_0/stream = ExtResource("8_l11wn")
+stream_0/weight = 1.0
+
+[node name="Enemy" type="CharacterBody3D" groups=["enemy"]]
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("1_uw31n")
+walk_speed = 2.5
+base_guard = -8.0
+
+[node name="StandCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("2")
+
+[node name="CrouchCollider" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+shape = SubResource("CapsuleShape3D_8dr1x")
+
+[node name="StepSound" type="AudioStreamPlayer3D" parent="."]
+stream = SubResource("AudioStreamRandomizer_62qae")
+
+[node name="JumpSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("4_h3eei")
+volume_db = -4.0
+
+[node name="LandSound" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("5_5suk5")
+volume_db = -4.0
+
+[node name="HitSound" type="AudioStreamPlayer3D" parent="."]
+stream = SubResource("AudioStreamRandomizer_17ciy")
+volume_db = -4.0
+
+[node name="BlockSound" type="AudioStreamPlayer3D" parent="."]
+stream = SubResource("AudioStreamRandomizer_eyjex")
+volume_db = -4.0
+
+[node name="SwingSound" type="AudioStreamPlayer3D" parent="."]
+stream = SubResource("AudioStreamRandomizer_o533x")
+volume_db = -4.0
+
+[node name="Model" parent="." instance=ExtResource("8_xnvng")]

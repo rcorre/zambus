@@ -1,0 +1,123 @@
+[gd_scene load_steps=6 format=3 uid="uid://cgdpypckw3u6m"]
+
+[ext_resource type="PackedScene" uid="uid://gwh4pntf12al" path="res://assets/models/maps/Halls.glb" id="1"]
+[ext_resource type="PackedScene" uid="uid://chqd4d350dabq" path="res://scenes/maps/Torch.tscn" id="2"]
+
+[sub_resource type="VoxelGIData" id="1"]
+_data = {
+"bounds": AABB(-17.5294, -7.51205, -14.1384, 35.0588, 15.0241, 28.2769),
+"level_counts": PackedInt32Array(1, 0, 0, 0, 0, 0, 0, 0),
+"octree_cells": PackedByteArray(255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255),
+"octree_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+"octree_df_png": PackedByteArray(137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 32, 0, 0, 0, 0, 128, 8, 0, 0, 0, 0, 134, 204, 184, 193, 0, 0, 0, 1, 115, 82, 71, 66, 0, 174, 206, 28, 233, 0, 0, 5, 77, 73, 68, 65, 84, 120, 156, 237, 218, 49, 13, 0, 32, 0, 192, 48, 192, 191, 103, 16, 193, 65, 88, 90, 5, 19, 176, 185, 7, 0, 0, 0, 0, 0, 0, 0, 240, 187, 245, 58, 0, 0, 0, 0, 0, 0, 0, 0, 184, 103, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 16, 96, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 16, 96, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 16, 96, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 16, 96, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 16, 96, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 16, 96, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 16, 96, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 16, 96, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 16, 96, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 16, 96, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 16, 96, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 16, 96, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 16, 96, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 16, 96, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 128, 1, 0, 0, 0, 0, 0, 0, 0, 0, 2, 12, 0, 0, 0, 0, 0, 0, 0, 0, 16, 96, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 4, 24, 0, 0, 0, 0, 0, 0, 0, 0, 32, 192, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 6, 0, 0, 0, 0, 0, 0, 0, 0, 8, 48, 0, 0, 0, 0, 0, 0, 0, 0, 64, 192, 1, 39, 31, 1, 255, 252, 57, 104, 57, 0, 0, 0, 0, 73, 69, 78, 68, 174, 66, 96, 130),
+"octree_size": Vector3(128, 64, 128),
+"to_cell_xform": Transform3D(3.65101, 0, 0, 0, 3.65101, 0, 0, 0, 3.65101, 64, 27.4266, 51.6196)
+}
+dynamic_range = 4.0
+propagation = 0.7
+interior = true
+
+[sub_resource type="BoxShape3D" id="2"]
+size = Vector3(21, 3, 17)
+
+[sub_resource type="Environment" id="Environment_eqifu"]
+tonemap_mode = 2
+sdfgi_read_sky_light = false
+glow_enabled = true
+glow_levels/2 = 2.0
+glow_levels/3 = 2.0
+glow_levels/4 = 2.0
+glow_levels/5 = 0.5
+glow_blend_mode = 1
+
+[node name="Halls" instance=ExtResource("1")]
+
+[node name="Torches" type="Node3D" parent="." index="19"]
+
+[node name="Torch19" parent="Torches" index="0" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0972, 3, -11.6901)
+
+[node name="Torch18" parent="Torches" index="1" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.10412, 3, -11.6901)
+
+[node name="Torch17" parent="Torches" index="2" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0646, 3, 11.7522)
+
+[node name="Torch16" parent="Torches" index="3" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.12712, 3, 11.7004)
+
+[node name="Torch15" parent="Torches" index="4" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.08196, 3, 2.23482)
+
+[node name="Torch14" parent="Torches" index="5" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.07716, 3, 2.29649)
+
+[node name="Torch13" parent="Torches" index="6" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.04394, 3, -2.242)
+
+[node name="Torch12" parent="Torches" index="7" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.3, 4, -7.242)
+
+[node name="Torch11" parent="Torches" index="8" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.3, 4, -11.242)
+
+[node name="Torch10" parent="Torches" index="9" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.3, 4, 9.758)
+
+[node name="Torch9" parent="Torches" index="10" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.3, 4, 5.758)
+
+[node name="Torch8" parent="Torches" index="11" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.3, 4, 9.758)
+
+[node name="Torch7" parent="Torches" index="12" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.3, 4, 5.758)
+
+[node name="Torch6" parent="Torches" index="13" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.3, 4, -6.242)
+
+[node name="Torch5" parent="Torches" index="14" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.3, 4, -10.242)
+
+[node name="Torch4" parent="Torches" index="15" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.3, 4, 1.758)
+
+[node name="Torch3" parent="Torches" index="16" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.3, 4, -2.242)
+
+[node name="Torch2" parent="Torches" index="17" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.3, 4, 1.758)
+
+[node name="Torch1" parent="Torches" index="18" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15.3, 4, -2.242)
+
+[node name="Torch" parent="Torches" index="19" instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.09508, 3.06942, -2.26891)
+
+[node name="VoxelGI" type="VoxelGI" parent="." index="20"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)
+size = Vector3(35.0588, 15.0241, 28.2769)
+data = SubResource("1")
+
+[node name="SpawnPoints" type="Node3D" parent="." index="21"]
+
+[node name="SpawnPoint" type="Marker3D" parent="SpawnPoints" index="0" groups=["spawn"]]
+transform = Transform3D(1, 0, 1.19209e-07, 0, 1, 0, -1.19209e-07, 0, 1, -0.4, 0, -10)
+
+[node name="SpawnPoint2" type="Marker3D" parent="SpawnPoints" index="1" groups=["spawn"]]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 0.1, 0, -4)
+
+[node name="SpawnPoint3" type="Marker3D" parent="SpawnPoints" index="2" groups=["spawn"]]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, -3.9, 0, -10)
+
+[node name="SpawnPoint4" type="Marker3D" parent="SpawnPoints" index="3" groups=["spawn"]]
+transform = Transform3D(-1, 0, -1.50996e-07, 0, 1, 0, 1.50996e-07, 0, -1, 4.1, 0, -10)
+
+[node name="LevelBounds" type="StaticBody3D" parent="." index="22"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LevelBounds" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3, 0)
+shape = SubResource("2")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." index="23"]
+environment = SubResource("Environment_eqifu")

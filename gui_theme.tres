@@ -1,0 +1,25 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://b30bgfcc5iir8"]
+
+[ext_resource type="FontFile" path="res://assets/fonts/NormalFont.tres" id="1"]
+[ext_resource type="FontFile" uid="uid://ckktxamopbl8u" path="res://assets/fonts/Orbitron Medium.otf" id="1_w74lt"]
+
+[sub_resource type="StyleBoxLine" id="1"]
+color = Color(1, 1, 1, 1)
+thickness = 2
+
+[sub_resource type="StyleBoxLine" id="2"]
+color = Color(1, 1, 1, 1)
+thickness = 2
+vertical = true
+
+[resource]
+default_font = ExtResource("1")
+GridContainer/constants/hseparation = 16
+GridContainer/constants/vseparation = 16
+HBoxContainer/constants/separation = 32
+HSeparator/styles/separator = SubResource("1")
+TitleText/base_type = &"Label"
+TitleText/font_sizes/font_size = 32
+TitleText/fonts/font = ExtResource("1_w74lt")
+VBoxContainer/constants/separation = 32
+VSeparator/styles/separator = SubResource("2")

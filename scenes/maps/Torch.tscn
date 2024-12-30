@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://chqd4d350dabq"]
+
+[sub_resource type="StandardMaterial3D" id="1"]
+disable_ambient_light = true
+albedo_color = Color(1, 0.529412, 0.529412, 1)
+roughness = 0.0
+emission_enabled = true
+emission = Color(1, 0.341176, 0, 1)
+emission_energy_multiplier = 8.0
+disable_receive_shadows = true
+
+[sub_resource type="Curve" id="Curve_otv5n"]
+_data = [Vector2(0, 0.0920246), 0.0, 3.3081, 0, 0, Vector2(0.997275, 0.0981596), -4.1212, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_img6s"]
+curve = SubResource("Curve_otv5n")
+
+[sub_resource type="ParticleProcessMaterial" id="4"]
+emission_shape = 1
+emission_sphere_radius = 0.05
+direction = Vector3(0, 1, 0)
+spread = 112.27
+gravity = Vector3(0, 1, 0)
+scale_curve = SubResource("CurveTexture_img6s")
+
+[sub_resource type="SphereMesh" id="5"]
+radius = 0.1
+height = 0.2
+radial_segments = 16
+rings = 8
+
+[node name="TorchParticles" type="GPUParticles3D"]
+material_override = SubResource("1")
+amount = 64
+process_material = SubResource("4")
+draw_pass_1 = SubResource("5")
+
+[node name="TorchLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+light_color = Color(0.819608, 0.682353, 0.658824, 1)
+omni_range = 15.0

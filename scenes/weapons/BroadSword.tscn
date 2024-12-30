@@ -1,0 +1,60 @@
+[gd_scene load_steps=9 format=3 uid="uid://1ymj5kdlt88m"]
+
+[ext_resource type="PackedScene" uid="uid://cw7j5kxqcbtf6" path="res://assets/models/weapons/BroadSword.blend" id="1_5uvuu"]
+[ext_resource type="Texture2D" uid="uid://7oswse7ojddj" path="res://assets/textures/particles/star_02.png" id="2_j8ygw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lfaag"]
+size = Vector3(0.0200315, 0.887614, 0.102752)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_es48a"]
+transparency = 1
+emission_enabled = true
+emission = Color(1, 0.662745, 0, 1)
+emission_energy_multiplier = 16.0
+emission_texture = ExtResource("2_j8ygw")
+use_particle_trails = true
+
+[sub_resource type="Curve" id="Curve_w74gl"]
+_data = [Vector2(0, 0), 0.0, 1.68865, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_qrxxa"]
+curve = SubResource("Curve_w74gl")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_6vqr0"]
+lifetime_randomness = 0.53
+direction = Vector3(0, 1, -1)
+spread = 30.0
+initial_velocity_min = 1.0
+initial_velocity_max = 3.0
+gravity = Vector3(0, -4, 0)
+scale_curve = SubResource("CurveTexture_qrxxa")
+
+[sub_resource type="RibbonTrailMesh" id="RibbonTrailMesh_odfob"]
+size = 0.1
+
+[node name="BroadSword" instance=ExtResource("1_5uvuu")]
+collision_layer = 9
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.59616, 0)
+shape = SubResource("BoxShape3D_lfaag")
+
+[node name="RayCast3D" type="RayCast3D" parent="." index="2"]
+enabled = false
+target_position = Vector3(0, 1, 0)
+collide_with_areas = true
+
+[node name="HitParticles" type="GPUParticles3D" parent="." index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0)
+material_override = SubResource("StandardMaterial3D_es48a")
+emitting = false
+amount = 16
+lifetime = 0.5
+one_shot = true
+explosiveness = 0.9
+trail_enabled = true
+trail_lifetime = 0.1
+process_material = SubResource("ParticleProcessMaterial_6vqr0")
+draw_pass_1 = SubResource("RibbonTrailMesh_odfob")
