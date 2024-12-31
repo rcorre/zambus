@@ -1,8 +1,6 @@
 extends Node3D
 class_name PlayerModel
 
-@onready var camera: Camera3D = $Armature/Skeleton3D/Camera_2/Camera_2
-
 @onready var anim: AnimationTree = $AnimationTree
 @onready var skel: Skeleton3D = $Armature/Skeleton3D
 

@@ -23,7 +23,8 @@ const ATTACK_SPEED := 1.0
 @export var attack_speed := 4.0
 @export var base_guard := 0.0
 
-@onready var model: PlayerModel = $Model
+@onready var model: PlayerModel = $ThirdPersonModel
+@onready var camera: Camera3D = $Camera3D
 @onready var stand_collider: CollisionShape3D = $StandCollider
 @onready var crouch_collider: CollisionShape3D = $CrouchCollider
 
@@ -61,9 +62,7 @@ var next_state_frame: int
 var state_interpolation: float
 
 func _ready() -> void:
-	if is_local:
-		model.camera.make_current()
-
+	camera.current = is_local
 	equip(MeleeWeapon.Hand.MAIN, MeleeWeapon.Kind.CLUB)
 
 func get_state() -> PlayerState:

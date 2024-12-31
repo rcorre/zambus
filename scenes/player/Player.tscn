@@ -6,7 +6,7 @@
 [ext_resource type="AudioStream" uid="uid://h4wu4iwecsbu" path="res://assets/sounds/land.wav" id="6_enn5o"]
 [ext_resource type="AudioStream" uid="uid://hpp0ouqhisvs" path="res://assets/sounds/hit.wav" id="6_rfkb1"]
 [ext_resource type="AudioStream" uid="uid://r5wchw8f2wie" path="res://assets/sounds/metal_hit.wav" id="7_giicf"]
-[ext_resource type="PackedScene" uid="uid://dmier7ritk3sr" path="res://scenes/player/PlayerModel.tscn" id="8_0cdhg"]
+[ext_resource type="PackedScene" uid="uid://ccrf6kopi71es" path="res://scenes/player/ThirdPersonModel.tscn" id="8_7qhl4"]
 [ext_resource type="AudioStream" uid="uid://cqnyr30whgdev" path="res://assets/sounds/swing.wav" id="8_w0dtk"]
 
 [sub_resource type="CapsuleShape3D" id="2"]
@@ -22,22 +22,18 @@ height = 1.2
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_62qae"]
 streams_count = 1
 stream_0/stream = ExtResource("4_2ebmd")
-stream_0/weight = 1.0
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_17ciy"]
 streams_count = 1
 stream_0/stream = ExtResource("6_rfkb1")
-stream_0/weight = 1.0
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_eyjex"]
 streams_count = 1
 stream_0/stream = ExtResource("7_giicf")
-stream_0/weight = 1.0
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_o533x"]
 streams_count = 1
 stream_0/stream = ExtResource("8_w0dtk")
-stream_0/weight = 1.0
 
 [node name="Player" type="CharacterBody3D"]
 collision_layer = 2
@@ -75,4 +71,7 @@ volume_db = -4.0
 stream = SubResource("AudioStreamRandomizer_o533x")
 volume_db = -4.0
 
-[node name="Model" parent="." instance=ExtResource("8_0cdhg")]
+[node name="ThirdPersonModel" parent="." instance=ExtResource("8_7qhl4")]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 1.4, 0.1)
