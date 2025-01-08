@@ -1,0 +1,21 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://p4wvcekm5lol"]
+
+[sub_resource type="StyleBoxLine" id="1"]
+color = Color(1, 1, 1, 1)
+thickness = 2
+
+[sub_resource type="StyleBoxLine" id="2"]
+color = Color(1, 1, 1, 1)
+thickness = 2
+vertical = true
+
+[resource]
+GridContainer/constants/hseparation = 16
+GridContainer/constants/vseparation = 16
+HBoxContainer/constants/separation = 32
+HSeparator/styles/separator = SubResource("1")
+TitleText/base_type = &"Label"
+TitleText/font_sizes/font_size = 32
+TitleText/fonts/font = null
+VBoxContainer/constants/separation = 32
+VSeparator/styles/separator = SubResource("2")
