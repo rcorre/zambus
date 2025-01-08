@@ -53,10 +53,10 @@ class Integer:
 
 	func _normalize(val):
 		if typeof(val) != TYPE_INT:
-			push_warning("Invalid type for setting %s: %s" % [full_name(), typeof(val)])
+			push_warning("Invalid type for setting %s: %s" % [full_name(), type_string(typeof(val))])
 			return _default
 
-		var res: float = clamp(val, lower, upper)
+		var res: int = clamp(val, lower, upper)
 		if res != val:
 			push_warning("Config %s value %s out of range [%d, %d]" % [full_name(), val, lower, upper])
 
