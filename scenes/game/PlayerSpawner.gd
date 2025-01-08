@@ -6,24 +6,22 @@ extends Node
 var avatars: Dictionary = {}
 
 func _ready():
-	NetworkEvents.on_client_start.connect(_handle_connected)
-	NetworkEvents.on_server_start.connect(_handle_host)
+	if not multiplayer.is_server():
+		return
+
 	NetworkEvents.on_peer_join.connect(_handle_new_peer)
 	NetworkEvents.on_peer_leave.connect(_handle_leave)
 	NetworkEvents.on_client_stop.connect(_handle_stop)
 	NetworkEvents.on_server_stop.connect(_handle_stop)
 
-func _handle_connected(id: int):
-	# Spawn an avatar for us
-	_spawn(id)
-
-func _handle_host():
-	# Spawn own avatar on host machine
-	_spawn(1)
+	server_spawn(multiplayer.get_unique_id())
 
 func _handle_new_peer(id: int):
-	# Spawn an avatar for new player
-	_spawn(id)
+	for key in avatars.keys():
+		prints("Telling new player", id, "about player", key)
+		var avatar := avatars[key] as Node3D
+		spawn.rpc_id(id, key, avatar.position)
+	server_spawn(id)
 
 func _handle_leave(id: int):
 	if not avatars.has(id):
@@ -39,12 +37,18 @@ func _handle_stop():
 		(avatar as Node).queue_free()
 	avatars.clear()
 
-func _spawn(id: int):
+func server_spawn(id: int):
+	prints("Spawning player", id)
+	var pos := get_next_spawn_point(id)
+	spawn.rpc(id, pos)
+
+@rpc("authority", "call_local")
+func spawn(id: int, pos: Vector3):
 	var avatar = player_scene.instantiate() as Node
 	avatars[id] = avatar
 	avatar.name += " #%d" % id
 	add_child(avatar as Node)
-	avatar.global_position = get_next_spawn_point(id)
+	avatar.global_position = pos
 
 	# Avatar is always owned by server
 	avatar.set_multiplayer_authority(1)
@@ -58,10 +62,8 @@ func _spawn(id: int):
 		print("Set input(%s) ownership to %s" % [input.name, id])
 
 func get_next_spawn_point(peer_id: int, spawn_idx: int = 0) -> Vector3:
-	# The same data is used to calculate the index on all peers
-	# As a result, spawn points are the same, even without sync
 	var idx := peer_id * 37 + spawn_idx * 19
 	idx = hash(idx)
 	idx = idx % spawn_points.size()
 
-	return spawn_points[idx].global_position
+	return spawn_points[idx].position

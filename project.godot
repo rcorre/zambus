@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Zambus"
 config/description="Co-op zombie survival game"
-run/main_scene="res://scenes/world/World.tscn"
+run/main_scene="res://menus/title/Title.tscn"
 config/features=PackedStringArray("4.3")
 run/max_fps=240
 config/icon="res://icon.png"

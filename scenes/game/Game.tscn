@@ -1,9 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://bfshwoko470di"]
+[gd_scene load_steps=6 format=3 uid="uid://bfshwoko470di"]
 
 [ext_resource type="PackedScene" uid="uid://vrso6qncj1nm" path="res://scenes/player/Player.tscn" id="2_p13fk"]
-[ext_resource type="Script" path="res://scenes/world/PlayerSpawner.gd" id="3_c7rxg"]
-[ext_resource type="PackedScene" uid="uid://badtpsxn5lago" path="res://shared/ui/network-popup.tscn" id="3_pf45j"]
-[ext_resource type="Script" path="res://shared/scripts/simple-time-display.gd" id="4_c2ddp"]
+[ext_resource type="Script" path="res://scenes/game/PlayerSpawner.gd" id="3_c7rxg"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_m76yx"]
 
@@ -37,24 +35,6 @@ player_scene = ExtResource("2_p13fk")
 spawn_points = [NodePath("../../Spawn Points/Marker3D"), NodePath("../../Spawn Points/Marker3D2"), NodePath("../../Spawn Points/Marker3D3"), NodePath("../../Spawn Points/Marker3D4"), NodePath("../../Spawn Points/Marker3D5")]
 
 [node name="Players" type="Node" parent="."]
-
-[node name="UI" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Network Popup" parent="UI" instance=ExtResource("3_pf45j")]
-layout_mode = 1
-current_tab = 0
-
-[node name="Time Display" type="Label" parent="UI"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-script = ExtResource("4_c2ddp")
 
 [node name="Map" type="Node" parent="."]
 

@@ -1,0 +1,65 @@
+[gd_scene load_steps=9 format=3 uid="uid://mp0481s15wtf"]
+
+[ext_resource type="Theme" uid="uid://p4wvcekm5lol" path="res://gui_theme.tres" id="1"]
+[ext_resource type="Script" path="res://menus/title/QuitButton.gd" id="2"]
+[ext_resource type="Script" path="res://menus/title/HostButton.gd" id="3"]
+[ext_resource type="Script" path="res://menus/title/Title.gd" id="4"]
+[ext_resource type="PackedScene" uid="uid://ne4d5ftuw2rs" path="res://menus/SettingsMenu.tscn" id="5"]
+[ext_resource type="Script" path="res://menus/TabSelectButton.gd" id="5_wq6wg"]
+[ext_resource type="Script" path="res://menus/title/JoinButton.gd" id="6"]
+
+[sub_resource type="FontVariation" id="FontVariation_biyrv"]
+
+[node name="Title" type="TabContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("1")
+current_tab = 0
+tabs_visible = false
+script = ExtResource("4")
+
+[node name="TitleMenu" type="VBoxContainer" parent="."]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="Label" type="Label" parent="TitleMenu"]
+layout_mode = 2
+theme_type_variation = &"TitleText"
+theme_override_fonts/font = SubResource("FontVariation_biyrv")
+text = "Zambus"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="TitleMenu"]
+layout_mode = 2
+
+[node name="HostButton" type="Button" parent="TitleMenu"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Host"
+script = ExtResource("3")
+
+[node name="JoinButton" type="Button" parent="TitleMenu"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Join"
+script = ExtResource("6")
+
+[node name="OptionsButton" type="Button" parent="TitleMenu"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Options"
+script = ExtResource("5_wq6wg")
+tab = 1
+
+[node name="QuitButton" type="Button" parent="TitleMenu"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Quit"
+script = ExtResource("2")
+
+[node name="Control" parent="." instance=ExtResource("5")]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1

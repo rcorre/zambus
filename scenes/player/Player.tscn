@@ -41,10 +41,6 @@ mesh = SubResource("BoxMesh_qmeb2")
 
 [node name="PlayerFPSWeapon" type="Node3D" parent="Head"]
 script = ExtResource("3_4j0gy")
-fire_cooldown = null
-max_distance = null
-collision_mask = null
-exclude = null
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Head/PlayerFPSWeapon"]
 
