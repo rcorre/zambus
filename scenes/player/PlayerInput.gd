@@ -2,8 +2,6 @@ extends BaseNetInput
 class_name PlayerInput
 @export var mouse_sensitivity: float = 0.5
 
-@onready var camera: Camera3D = $"../Head/Camera3D"
-
 # Config variables
 var is_setup: bool = false
 var override_mouse: bool = false
@@ -54,5 +52,4 @@ func _gather():
 
 func setup():
 	is_setup = true
-	camera.current = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)

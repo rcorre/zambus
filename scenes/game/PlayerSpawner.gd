@@ -44,19 +44,20 @@ func server_spawn(id: int):
 
 @rpc("authority", "call_local")
 func spawn(id: int, pos: Vector3):
-	var avatar = player_scene.instantiate() as Node
-	avatars[id] = avatar
-	avatar.name += " #%d" % id
-	add_child(avatar as Node)
-	avatar.global_position = pos
+	var player = player_scene.instantiate() as Player
+	avatars[id] = player
+	player.name += " #%d" % id
+	player.is_local = id == multiplayer.get_unique_id()
+	add_child(player as Node)
+	player.global_position = pos
 
 	# Avatar is always owned by server
-	avatar.set_multiplayer_authority(1)
+	player.set_multiplayer_authority(1)
 
-	print("Spawned avatar %s at %s" % [avatar.name, multiplayer.get_unique_id()])
+	print("Spawned player %s at %s" % [player.name, multiplayer.get_unique_id()])
 
 	# Avatar's input object is owned by player
-	var input = avatar.find_child("Input")
+	var input = player.find_child("Input")
 	if input != null:
 		input.set_multiplayer_authority(id)
 		print("Set input(%s) ownership to %s" % [input.name, id])

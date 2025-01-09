@@ -1,8 +1,10 @@
 extends CharacterBody3D
+class_name Player
 
 @export var speed := 5.0
 @export var jump_strength := 5.0
 
+@onready var model: PlayerModel = $ThirdPersonModel
 @onready var display_name := $DisplayNameLabel3D as Label3D
 @onready var input := $Input as PlayerInput
 @onready var tick_interpolator := $TickInterpolator as TickInterpolator
@@ -15,6 +17,8 @@ var death_tick: int = -1
 var respawn_position: Vector3
 var did_respawn := false
 var deaths := 0
+var is_local := false
+var look_y := 0.0
 
 func _ready():
 	display_name.text = name
@@ -25,7 +29,7 @@ func _ready():
 	# Need to interpolate the whole transform (not individual rotations)
 	# otherwise angle wrapping is not handled properly
 	tick_interpolator.add_property(self, "transform")
-	tick_interpolator.add_property(head, "rotation:x")
+	tick_interpolator.add_property(self, "look_y")
 
 	# For rollback, sync the minimum we need
 	# position + x/y rotation, not the whole transform
@@ -33,14 +37,18 @@ func _ready():
 	rollback_synchronizer.add_state(self, "rotation:y")
 	rollback_synchronizer.add_state(self, "velocity")
 	rollback_synchronizer.add_state(self, "did_respawn")
-	rollback_synchronizer.add_state(head, "rotation:x")
+	rollback_synchronizer.add_state(self, "look_y")
 
 	rollback_synchronizer.add_input(input, "movement")
 	rollback_synchronizer.add_input(input, "jump")
 	rollback_synchronizer.add_input(input, "fire")
 	rollback_synchronizer.add_input(input, "look_angle")
 
+	if is_local:
+		model.camera.make_current()
+
 func _tick(_dt: float, _tick_num: int):
+	model.set_velocity(velocity)
 	if health <= 0:
 		deaths += 1
 		die()
@@ -48,6 +56,13 @@ func _tick(_dt: float, _tick_num: int):
 func _after_tick_loop():
 	if did_respawn:
 		tick_interpolator.teleport()
+
+# TODO: setting look in both process and _rollback_tick may not be correct.
+# I'm doing this to have both accurate aiming and a smooth camera.
+# I may need a separate first-person model.
+# I could also try interpolating the camera.
+func _process(_delta: float) -> void:
+	model.set_look_y(look_y)
 
 func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	# Handle respawn
@@ -69,10 +84,8 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	rotate_object_local(Vector3(0, 1, 0), input.look_angle.x)
 
 	# Handle look up and down
-	head.rotation.z = 0
-	head.rotation.y = 0
-	head.rotate_object_local(Vector3(1, 0, 0), input.look_angle.y)
-	head.rotation.x = clamp(head.rotation.x, -1.57, 1.57)
+	look_y = clamp(look_y + input.look_angle.y, -1.57, 1.57)
+	model.set_look_y(look_y)
 
 	# Apply movement
 	var direction = (transform.basis * Vector3(input.movement.x, 0, input.movement.y)).normalized()
@@ -101,6 +114,8 @@ func damage():
 		prints("%s HP now at %s", [name, health])
 
 func die():
+	model.die(is_local)
+
 	if not is_multiplayer_authority():
 		return
 
