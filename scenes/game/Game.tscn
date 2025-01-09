@@ -29,13 +29,6 @@ environment = SubResource("Environment_xhc6u")
 
 [node name="Network" type="Node" parent="."]
 
-[node name="Player Spawner" type="Node" parent="Network" node_paths=PackedStringArray("spawn_points")]
-script = ExtResource("3_c7rxg")
-player_scene = ExtResource("2_p13fk")
-spawn_points = [NodePath("../../Spawn Points/Marker3D"), NodePath("../../Spawn Points/Marker3D2"), NodePath("../../Spawn Points/Marker3D3"), NodePath("../../Spawn Points/Marker3D4"), NodePath("../../Spawn Points/Marker3D5")]
-
-[node name="Players" type="Node" parent="."]
-
 [node name="Map" type="Node" parent="."]
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="Map"]
@@ -89,3 +82,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.17049, 1, -17)
 
 [node name="Marker3D5" type="Marker3D" parent="Spawn Points"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.17049, 1, 0)
+
+[node name="Players" type="Node" parent="." node_paths=PackedStringArray("spawn_points")]
+script = ExtResource("3_c7rxg")
+player_scene = ExtResource("2_p13fk")
+spawn_points = [NodePath("../Spawn Points/Marker3D"), NodePath("../Spawn Points/Marker3D2"), NodePath("../Spawn Points/Marker3D3"), NodePath("../Spawn Points/Marker3D4"), NodePath("../Spawn Points/Marker3D5")]
