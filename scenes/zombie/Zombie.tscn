@@ -1,9 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://balpcdhbvfjkv"]
+[gd_scene load_steps=7 format=3 uid="uid://balpcdhbvfjkv"]
 
 [ext_resource type="Script" path="res://scenes/zombie/Zombie.gd" id="1_ci3h3"]
-[ext_resource type="Script" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="3_iv0o2"]
 [ext_resource type="Script" path="res://addons/netfox/tick-interpolator.gd" id="4_08br7"]
-[ext_resource type="Script" path="res://scenes/player/PlayerInput.gd" id="5_gga4k"]
+[ext_resource type="Script" path="res://addons/netfox/state-synchronizer.gd" id="5_rwtug"]
 [ext_resource type="PackedScene" uid="uid://viupvwuisje3" path="res://scenes/zombie/ZombieModel.tscn" id="5_wu2ne"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6kydi"]
@@ -21,16 +20,10 @@ properties/2/replication_mode = 2
 
 [node name="Zombie" type="CharacterBody3D"]
 script = ExtResource("1_ci3h3")
-speed = null
-jump_strength = null
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 shape = SubResource("CapsuleShape3D_6kydi")
-
-[node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
-script = ExtResource("3_iv0o2")
-root = NodePath("..")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_70css")
@@ -39,8 +32,9 @@ replication_config = SubResource("SceneReplicationConfig_70css")
 script = ExtResource("4_08br7")
 root = NodePath("..")
 
-[node name="Input" type="Node" parent="."]
-script = ExtResource("5_gga4k")
-
 [node name="ZombieModel" parent="." instance=ExtResource("5_wu2ne")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+
+[node name="StateSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
+script = ExtResource("5_rwtug")
+root = NodePath("..")

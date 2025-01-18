@@ -1,6 +1,8 @@
 extends CharacterBody3D
 class_name Player
 
+const GROUP := "player"
+
 @export var speed := 5.0
 @export var jump_strength := 5.0
 
@@ -19,6 +21,9 @@ var did_respawn := false
 var deaths := 0
 var is_local := false
 var look_y := 0.0
+
+func _enter_tree():
+	add_to_group(GROUP)
 
 func _ready():
 	display_name.text = name

@@ -1,6 +1,6 @@
 extends Node
 
-const ZOMBIE_SCENE := preload("res://scenes/player/Player.tscn")
+const ZOMBIE_SCENE := preload("res://scenes/zombie/Zombie.tscn")
 @export var spawn_points: Node
 
 var zombie_idx := 0
