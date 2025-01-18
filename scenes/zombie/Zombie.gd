@@ -3,18 +3,16 @@ class_name Zombie
 
 const AGGRO_RANGE := 20.0
 
-@export var speed := 0.85
+@export var speed := 0.8
 @export var jump_strength := 5.0
 
 @onready var model: ZombieModel = $ZombieModel
 @onready var display_name := $DisplayNameLabel3D as Label3D
 @onready var tick_interpolator := $TickInterpolator as TickInterpolator
 @onready var state_synchronizer := $StateSynchronizer as StateSynchronizer
-@onready var head := $Head as Node3D
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var health: int = 100
-var respawn_position: Vector3
 
 func _ready():
 	NetworkTime.on_tick.connect(_on_tick)
@@ -39,7 +37,6 @@ func _nearest_player() -> Node3D:
 		if dist < min_dist:
 			min_dist = dist
 			target = player3d
-	prints(target)
 	return target
 
 func _on_tick(delta: float, _tick: int):
@@ -60,12 +57,14 @@ func _on_tick(delta: float, _tick: int):
 		return
 
 	# Handle look left and right
-	var look_target := transform.looking_at(target.transform.origin)
+	var look_target := transform.looking_at(target.transform.origin, Vector3.UP, true)
 	# TODO: interpolate speed
 	transform = look_target
 
 	# Zombies only walk in the direction they face
-	velocity.x = -speed
+	var move_target := transform.basis.z.normalized() * speed
+	velocity.x = move_target.x
+	velocity.z = move_target.z
 
 	# move_and_slide assumes physics delta
 	# multiplying velocity by NetworkTime.physics_factor compensates for it
