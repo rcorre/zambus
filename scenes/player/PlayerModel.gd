@@ -28,8 +28,19 @@ func set_velocity(vel: Vector3):
 func set_look_y(look: float):
 	anim.set("parameters/look_y/add_amount", 2.0 * look / PI)
 
-func attack():
-	anim.set("parameters/attack/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+func set_action(action: Player.Action, action_progress: float):
+	match action:
+		Player.Action.NONE:
+			anim.set("parameters/attack/blend_amount", 0.0)
+			anim.set("parameters/attack_swing/blend_position", 0.0)
+		Player.Action.AIM:
+			anim.set("parameters/attack/blend_amount", action_progress)
+		Player.Action.ATTACK:
+			anim.set("parameters/attack/blend_amount", 1.0)
+			anim.set("parameters/attack_swing/blend_position", action_progress)
+		Player.Action.RECOIL:
+			anim.set("parameters/attack/blend_amount", 1.0 - action_progress)
+			anim.set("parameters/attack_swing/blend_position", 1.0)
 
 func equip():
 	anim.set("parameters/equip/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)

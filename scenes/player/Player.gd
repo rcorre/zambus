@@ -5,8 +5,13 @@ const GROUP := "player"
 
 enum Action {
 	NONE,
-	SWING,
+	AIM,
+	ATTACK,
+	RECOIL,
 }
+
+const AIM_SPEED := 4.0
+const ATTACK_SPEED := 8.0
 
 @export var speed := 5.0
 @export var jump_strength := 5.0
@@ -26,7 +31,11 @@ var respawn_position: Vector3
 var did_respawn := false
 var deaths := 0
 var is_local := false
+
+# Rollback properties
 var look_y := 0.0
+var action: Action
+var action_progress := 0.0
 
 func _enter_tree():
 	add_to_group(GROUP)
@@ -41,6 +50,7 @@ func _ready():
 	# otherwise angle wrapping is not handled properly
 	tick_interpolator.add_property(self, "transform")
 	tick_interpolator.add_property(self, "look_y")
+	tick_interpolator.add_property(self, "action_progress")
 
 	# For rollback, sync the minimum we need
 	# position + x/y rotation, not the whole transform
@@ -49,6 +59,8 @@ func _ready():
 	rollback_synchronizer.add_state(self, "velocity")
 	rollback_synchronizer.add_state(self, "did_respawn")
 	rollback_synchronizer.add_state(self, "look_y")
+	rollback_synchronizer.add_state(self, "action")
+	rollback_synchronizer.add_state(self, "action_progress")
 
 	rollback_synchronizer.add_input(input, "movement")
 	rollback_synchronizer.add_input(input, "jump")
@@ -58,11 +70,9 @@ func _ready():
 	if is_local:
 		model.camera.make_current()
 
-func _tick(_dt: float, _tick_num: int):
+func _tick(delta: float, _tick_num: int):
 	model.set_velocity(velocity)
-	if input.attack:
-		weapon.fire()
-		model.attack()
+
 	if health <= 0:
 		deaths += 1
 		die()
@@ -79,6 +89,7 @@ func _process(_delta: float) -> void:
 	model.set_look_y(look_y)
 
 func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
+	model.set_action(action, action_progress)
 	# Handle respawn
 	if tick == death_tick:
 		global_position = respawn_position
@@ -115,6 +126,36 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	velocity *= NetworkTime.physics_factor
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
+
+	var last_action := action
+	if action == Action.NONE:
+		if input.attack:
+			prints("Starting aim")
+			action = Action.AIM
+	elif action_progress >= 1.0:
+		match action:
+			Action.AIM:
+				if !input.attack:
+					# Hold the attack "charged" until the attack button is released
+					prints("Starting attack")
+					action = Action.ATTACK
+			Action.ATTACK:
+				prints("Completed attack")
+				weapon.fire()
+				action = Action.RECOIL
+			Action.RECOIL:
+				action = Action.NONE
+	else:
+		match action:
+			Action.AIM:
+				action_progress += delta * AIM_SPEED
+			Action.ATTACK:
+				action_progress += delta * ATTACK_SPEED
+			Action.RECOIL:
+				action_progress += delta * ATTACK_SPEED
+
+	if action != last_action:
+		action_progress = 0.0
 
 func _force_update_is_on_floor():
 	var old_velocity = velocity
