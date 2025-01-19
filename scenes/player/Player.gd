@@ -87,9 +87,9 @@ func _after_tick_loop():
 # I could also try interpolating the camera.
 func _process(_delta: float) -> void:
 	model.set_look_y(look_y)
+	model.set_action(action, action_progress)
 
 func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
-	model.set_action(action, action_progress)
 	# Handle respawn
 	if tick == death_tick:
 		global_position = respawn_position
@@ -156,6 +156,7 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 
 	if action != last_action:
 		action_progress = 0.0
+		tick_interpolator.teleport()
 
 func _force_update_is_on_floor():
 	var old_velocity = velocity
