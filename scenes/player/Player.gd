@@ -3,6 +3,11 @@ class_name Player
 
 const GROUP := "player"
 
+enum Action {
+	NONE,
+	SWING,
+}
+
 @export var speed := 5.0
 @export var jump_strength := 5.0
 

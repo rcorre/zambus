@@ -2,12 +2,13 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://df8bi4yvvtyni"
-valid=false
+uid="uid://brr0x1k8hbws8"
+path="res://.godot/imported/hit.wav-b122da9ae3f69dfbe7a6d1bf9e1b423e.sample"
 
 [deps]
 
-source_file="res://assets/sounds/woosh.wav"
+source_file="res://assets/sounds/hit.wav"
+dest_files=["res://.godot/imported/hit.wav-b122da9ae3f69dfbe7a6d1bf9e1b423e.sample"]
 
 [params]
 

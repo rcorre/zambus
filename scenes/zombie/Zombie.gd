@@ -4,11 +4,12 @@ class_name Zombie
 const MAX_HEALTH := 100.0
 const AGGRO_RANGE := 20.0
 
+@onready var hit_sound: AudioStreamPlayer3D = $HitSound
+
 @export var speed := 0.8
 @export var flinch := 0.0
 
 @onready var model: ZombieModel = $ZombieModel
-@onready var display_name := $DisplayNameLabel3D as Label3D
 @onready var tick_interpolator := $TickInterpolator as TickInterpolator
 @onready var state_synchronizer := $StateSynchronizer as StateSynchronizer
 
@@ -93,6 +94,7 @@ func damage(amount: float, impact: Vector3):
 
 @rpc("authority", "call_local", "reliable")
 func set_health(val: int, impact: Vector3):
+	hit_sound.play()
 	flinch = 1.0
 	model.hurt()
 	health_bar.visible = health < MAX_HEALTH
