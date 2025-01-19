@@ -42,7 +42,7 @@ func server_spawn(id: int):
 	var pos := get_next_spawn_point(id)
 	spawn.rpc(id, pos)
 
-@rpc("authority", "call_local")
+@rpc("authority", "call_local", "reliable")
 func spawn(id: int, pos: Vector3):
 	var player = player_scene.instantiate() as Player
 	avatars[id] = player

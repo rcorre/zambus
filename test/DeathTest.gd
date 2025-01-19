@@ -4,5 +4,5 @@ extends Node3D
 
 func _ready() -> void:
 	prints("ready")
-	model.die()
+	model.die(Vector3.FORWARD * 10.0)
 

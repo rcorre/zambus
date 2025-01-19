@@ -5,6 +5,7 @@ const MAX_HEALTH := 100.0
 const AGGRO_RANGE := 20.0
 
 @export var speed := 0.8
+@export var flinch := 0.0
 
 @onready var model: ZombieModel = $ZombieModel
 @onready var display_name := $DisplayNameLabel3D as Label3D
@@ -52,6 +53,10 @@ func _on_tick(delta: float, _tick: int):
 	if !is_on_floor():
 		velocity.y -= gravity * delta
 
+	if flinch >= 0:
+		flinch -= delta
+		return
+
 	# TODO: update periodically instead of every frame
 	var target := _nearest_player()
 	if not target:
@@ -81,23 +86,21 @@ func _force_update_is_on_floor():
 	move_and_slide()
 	velocity = old_velocity
 
-func damage():
+func damage(amount: float, impact: Vector3):
 	if is_multiplayer_authority() and health > 0:
-		health -= 34
-		set_health.rpc(health)
+		health -= amount
+		set_health.rpc(health, impact)
 
-@rpc("authority", "call_local")
-func set_health(val: int):
+@rpc("authority", "call_local", "reliable")
+func set_health(val: int, impact: Vector3):
+	flinch = 1.0
+	model.hurt()
 	health_bar.visible = health < MAX_HEALTH
 	health = val
 	prints("Zombie", name, " health = ", health)
 	if health <= 0:
-		model.die()
-
-func die():
-	prints("Zombie", name, " died")
-	model.die()
+		model.die(impact)
+		get_tree().create_timer(5.0).timeout.connect(queue_free)
 
 func _process(delta: float) -> void:
-	prints(health_bar.value, health)
 	health_bar.value = lerp(health_bar.value, float(health), delta * 10.0)

@@ -20,7 +20,7 @@ func _on_tick(_delta, tick):
 	spawn.rpc(zombie_idx, trans, Zombie.MAX_HEALTH)
 	zombie_idx += 1
 
-@rpc("authority", "call_local")
+@rpc("authority", "call_local", "reliable")
 func spawn(id: int, trans: Transform3D, health: int):
 	var zombie := ZOMBIE_SCENE.instantiate() as Zombie
 	zombies.push_back(zombie)
@@ -29,15 +29,20 @@ func spawn(id: int, trans: Transform3D, health: int):
 	zombie.health = health
 	add_child(zombie)
 	zombie.transform = trans
+	zombie.tree_exited.connect(remove_zombie.bind(zombie))
 	print("Spawned zombie %s at %s" % [zombie.name, trans.origin])
 
-@rpc("any_peer")
+func remove_zombie(zombie: Zombie):
+	prints("Removing zombie", zombie)
+	zombies.erase(zombie)
+
+@rpc("any_peer", "reliable")
 func join():
 	assert(multiplayer.is_server())
 	var player_id := multiplayer.get_remote_sender_id()
 	prints("ZombieSpawner handling player join: ", player_id)
 	for zombie in zombies:
-		spawn.rpc_id(player_id, zombie.id, zombie.transform)
+		spawn.rpc_id(player_id, zombie.id, zombie.transform, zombie.health)
 
 func get_next_spawn_point() -> Transform3D:
 	var idx := randi_range(0, spawn_points.get_child_count() - 1)

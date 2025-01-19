@@ -2,11 +2,15 @@ extends Node3D
 class_name ZombieModel
 
 @onready var anim: AnimationTree = $AnimationTree
-@onready var skel: PhysicalBoneSimulator3D = $Armature/Skeleton3D/PhysicalBoneSimulator3D
+@onready var bones: PhysicalBoneSimulator3D = $Armature/Skeleton3D/PhysicalBoneSimulator3D
 
-func die():
-	prints("ZombieModel: die")
-	skel.physical_bones_start_simulation()
+func die(impact: Vector3):
+	prints("ZombieModel die:", impact)
+	bones.physical_bones_start_simulation()
+	for child in bones.get_children():
+		var bone := child as PhysicalBone3D
+		if bone:
+			bone.apply_central_impulse(impact)
 
 func set_velocity(vel: Vector3):
 	# vel is global, so un-rotate to get local velocity
