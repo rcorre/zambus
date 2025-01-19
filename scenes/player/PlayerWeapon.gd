@@ -1,5 +1,5 @@
 extends NetworkWeaponHitscan3D
-class_name PlayerFPSWeapon
+class_name Weapon
 
 @export var fire_cooldown: float = 0.25
 
@@ -7,9 +7,6 @@ class_name PlayerFPSWeapon
 @onready var sound: AudioStreamPlayer3D = $AudioStreamPlayer3D
 
 var last_fire: int = -1
-
-func _ready():
-	NetworkTime.on_tick.connect(_tick)
 
 func _can_fire() -> bool:
 	return NetworkTime.seconds_between(last_fire, NetworkTime.tick) >= fire_cooldown
@@ -28,6 +25,3 @@ func _on_hit(result: Dictionary):
 	if collider.has_method("damage"):
 		collider.call("damage")
 
-func _tick(_delta: float, _t: int):
-	if input.fire:
-		fire()

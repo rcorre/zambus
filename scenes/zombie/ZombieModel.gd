@@ -2,9 +2,10 @@ extends Node3D
 class_name ZombieModel
 
 @onready var anim: AnimationTree = $AnimationTree
-@onready var skel: Skeleton3D = $Armature/Skeleton3D
+@onready var skel: PhysicalBoneSimulator3D = $Armature/Skeleton3D/PhysicalBoneSimulator3D
 
 func die():
+	prints("ZombieModel: die")
 	skel.physical_bones_start_simulation()
 
 func set_velocity(vel: Vector3):

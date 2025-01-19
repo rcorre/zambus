@@ -1,18 +1,21 @@
 extends CharacterBody3D
 class_name Zombie
 
+const MAX_HEALTH := 100.0
 const AGGRO_RANGE := 20.0
 
 @export var speed := 0.8
-@export var jump_strength := 5.0
 
 @onready var model: ZombieModel = $ZombieModel
 @onready var display_name := $DisplayNameLabel3D as Label3D
 @onready var tick_interpolator := $TickInterpolator as TickInterpolator
 @onready var state_synchronizer := $StateSynchronizer as StateSynchronizer
 
+@onready var health_bar: Range = $SubViewport/HealthBar
+
+var id: int  # assigned by spawner
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
-var health: int = 100
+var health := MAX_HEALTH
 
 func _ready():
 	NetworkTime.on_tick.connect(_on_tick)
@@ -26,6 +29,8 @@ func _ready():
 	state_synchronizer.add_state(self, "position")
 	state_synchronizer.add_state(self, "rotation:y")
 	state_synchronizer.add_state(self, "velocity")
+
+	health_bar.visible = health < MAX_HEALTH
 
 # returns null if no player in aggro range
 func _nearest_player() -> Node3D:
@@ -41,8 +46,6 @@ func _nearest_player() -> Node3D:
 
 func _on_tick(delta: float, _tick: int):
 	model.set_velocity(velocity)
-	if health <= 0:
-		die()
 
 	# Gravity
 	_force_update_is_on_floor()
@@ -79,9 +82,22 @@ func _force_update_is_on_floor():
 	velocity = old_velocity
 
 func damage():
-	if is_multiplayer_authority():
+	if is_multiplayer_authority() and health > 0:
 		health -= 34
-		prints("%s HP now at %s", [name, health])
+		set_health.rpc(health)
+
+@rpc("authority", "call_local")
+func set_health(val: int):
+	health_bar.visible = health < MAX_HEALTH
+	health = val
+	prints("Zombie", name, " health = ", health)
+	if health <= 0:
+		model.die()
 
 func die():
+	prints("Zombie", name, " died")
 	model.die()
+
+func _process(delta: float) -> void:
+	prints(health_bar.value, health)
+	health_bar.value = lerp(health_bar.value, float(health), delta * 10.0)

@@ -26,10 +26,10 @@ script = ExtResource("1_mk8qw")
 [node name="Head" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 
-[node name="PlayerFPSWeapon" type="Node3D" parent="Head"]
+[node name="Weapon" type="Node3D" parent="Head"]
 script = ExtResource("3_4j0gy")
 
-[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Head/PlayerFPSWeapon"]
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Head/Weapon"]
 
 [node name="DisplayNameLabel3D" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.30427, 0)

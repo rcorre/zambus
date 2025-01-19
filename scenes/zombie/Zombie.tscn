@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://balpcdhbvfjkv"]
+[gd_scene load_steps=12 format=3 uid="uid://balpcdhbvfjkv"]
 
 [ext_resource type="Script" path="res://scenes/zombie/Zombie.gd" id="1_ci3h3"]
 [ext_resource type="Script" path="res://addons/netfox/tick-interpolator.gd" id="4_08br7"]
@@ -12,8 +12,34 @@ properties/0/path = NodePath(".:health")
 properties/0/spawn = true
 properties/0/replication_mode = 2
 
+[sub_resource type="QuadMesh" id="QuadMesh_6ay7t"]
+size = Vector2(1, 0.05)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_2acfr"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_m3fnx"]
+resource_local_to_scene = true
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_2acfr")
+disable_receive_shadows = true
+billboard_mode = 2
+distance_fade_mode = 1
+distance_fade_min_distance = 50.0
+distance_fade_max_distance = 1.0
+
+[sub_resource type="Gradient" id="Gradient_rxdym"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(1, 0, 0, 0.490196, 1, 0, 0, 1, 1, 0, 0, 0.490196)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_1iue6"]
+gradient = SubResource("Gradient_rxdym")
+width = 500
+height = 50
+
 [node name="Zombie" type="CharacterBody3D"]
 script = ExtResource("1_ci3h3")
+speed = null
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -31,3 +57,26 @@ root = NodePath("..")
 [node name="StateSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("5_rwtug")
 root = NodePath("..")
+
+[node name="HealthMesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+mesh = SubResource("QuadMesh_6ay7t")
+surface_material_override/0 = SubResource("StandardMaterial3D_m3fnx")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+disable_3d = true
+transparent_bg = true
+size = Vector2i(500, 50)
+
+[node name="HealthBar" type="TextureProgressBar" parent="SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 2
+step = 0.0
+value = 100.0
+fill_mode = 6
+texture_progress = SubResource("GradientTexture2D_1iue6")

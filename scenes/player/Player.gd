@@ -12,6 +12,7 @@ const GROUP := "player"
 @onready var tick_interpolator := $TickInterpolator as TickInterpolator
 @onready var rollback_synchronizer := $RollbackSynchronizer as RollbackSynchronizer
 @onready var head := $Head as Node3D
+@onready var weapon: Weapon = $Head/Weapon
 
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var health: int = 100
@@ -46,7 +47,7 @@ func _ready():
 
 	rollback_synchronizer.add_input(input, "movement")
 	rollback_synchronizer.add_input(input, "jump")
-	rollback_synchronizer.add_input(input, "fire")
+	rollback_synchronizer.add_input(input, "attack")
 	rollback_synchronizer.add_input(input, "look_angle")
 
 	if is_local:
@@ -54,6 +55,9 @@ func _ready():
 
 func _tick(_dt: float, _tick_num: int):
 	model.set_velocity(velocity)
+	if input.attack:
+		weapon.fire()
+		model.attack()
 	if health <= 0:
 		deaths += 1
 		die()

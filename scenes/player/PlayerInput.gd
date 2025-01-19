@@ -10,7 +10,7 @@ var override_mouse: bool = false
 var mouse_rotation: Vector2 = Vector2.ZERO
 var look_angle: Vector2 = Vector2.ZERO
 var movement: Vector2 = Vector2.ZERO
-var fire: bool = false
+var attack: bool = false
 var jump: bool = false
 
 func _notification(what):
@@ -41,7 +41,7 @@ func _gather():
 	movement = Input.get_vector("left", "right", "forward", "backward")
 
 	jump = Input.is_action_pressed("jump")
-	fire = Input.is_action_pressed("attack")
+	attack = Input.is_action_pressed("attack")
 
 	if override_mouse:
 		look_angle = Vector2.ZERO
