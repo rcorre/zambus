@@ -5,6 +5,7 @@ const MAX_HEALTH := 100.0
 const AGGRO_RANGE := 20.0
 const ACCEL := 1.6
 const SPEED := 0.8
+const TURN_RATE := 10.0
 
 @onready var hit_sound: AudioStreamPlayer3D = $HitSound
 
@@ -69,7 +70,7 @@ func _on_tick(delta: float, _tick: int):
 	# Handle look left and right
 	var look_target := transform.looking_at(target.transform.origin, Vector3.UP, true)
 	# TODO: interpolate SPEED
-	transform = look_target
+	transform = transform.interpolate_with(look_target, delta * TURN_RATE)
 
 	# Zombies only walk in the direction they face
 	var move_target := transform.basis.z.normalized() * SPEED
