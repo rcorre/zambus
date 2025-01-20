@@ -1,5 +1,121 @@
-[gd_scene load_steps=2 format=3 uid="uid://ctrlrbh6bcmy0"]
+[gd_scene load_steps=10 format=3 uid="uid://ctrlrbh6bcmy0"]
 
 [ext_resource type="PackedScene" uid="uid://4es5qq4cclwq" path="res://assets/models/weapons/Pistol.blend" id="1_yh1jx"]
+[ext_resource type="Script" path="res://scenes/weapons/Weapon.gd" id="2_bcc02"]
+[ext_resource type="Texture2D" uid="uid://dk5tw4hcntf4t" path="res://assets/textures/muzzle_02.png" id="3_5so45"]
+[ext_resource type="AudioStream" uid="uid://b7212llttj0ue" path="res://assets/sounds/pistol_shot.wav" id="4_07pk1"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_0pc4i"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_30k1g"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+cull_mode = 2
+albedo_color = Color(1, 0.89316, 0.671214, 1)
+albedo_texture = ExtResource("3_5so45")
+emission_enabled = true
+emission = Color(1, 0.921568, 0.672206, 1)
+
+[sub_resource type="Animation" id="Animation_0nc5c"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("MuzzleFlash:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("OmniLight3D:light_energy")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_k5v7o"]
+resource_name = "fire"
+tracks/0/type = "audio"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FireSound")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("4_07pk1")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/0/use_blend = true
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("MuzzleFlash:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.0666667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("OmniLight3D:light_energy")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.166667),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [4.0, 0.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_rxjje"]
+_data = {
+"RESET": SubResource("Animation_0nc5c"),
+"fire": SubResource("Animation_k5v7o")
+}
 
 [node name="Pistol" instance=ExtResource("1_yh1jx")]
+script = ExtResource("2_bcc02")
+
+[node name="MuzzleFlash" type="MeshInstance3D" parent="." index="1"]
+transform = Transform3D(8.47033e-23, 1.74846e-08, 0.4, 0.4, -1.74846e-08, 7.64274e-16, 1.74846e-08, 0.4, -1.74846e-08, 3.49691e-09, 0.0944856, 0.337571)
+visible = false
+mesh = SubResource("QuadMesh_0pc4i")
+surface_material_override/0 = SubResource("StandardMaterial3D_30k1g")
+
+[node name="MuzzleFlash2" type="MeshInstance3D" parent="MuzzleFlash" index="0"]
+transform = Transform3D(-4.37114e-08, 8.74228e-08, 1, 3.55271e-15, 1, -8.74228e-08, -1, 0, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_0pc4i")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_30k1g")
+
+[node name="FireSound" type="AudioStreamPlayer3D" parent="." index="2"]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." index="3"]
+libraries = {
+"": SubResource("AnimationLibrary_rxjje")
+}
+
+[node name="OmniLight3D" type="OmniLight3D" parent="." index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0928702, 0.213389)
+light_color = Color(1, 0.891089, 0.79258, 1)
+light_energy = 0.0
+omni_range = 10.0

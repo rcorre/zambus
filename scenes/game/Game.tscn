@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://bfshwoko470di"]
+[gd_scene load_steps=9 format=3 uid="uid://bfshwoko470di"]
 
 [ext_resource type="Script" path="res://scenes/game/Game.gd" id="1_6yxjw"]
 [ext_resource type="PackedScene" uid="uid://vrso6qncj1nm" path="res://scenes/player/Player.tscn" id="2_p13fk"]
+[ext_resource type="PackedScene" uid="uid://b8aqyq4eqn3sm" path="res://scenes/hud/Hud.tscn" id="2_ynfm6"]
 [ext_resource type="Script" path="res://scenes/game/PlayerSpawner.gd" id="3_c7rxg"]
 [ext_resource type="Script" path="res://scenes/game/ZombieSpawner.gd" id="3_pur83"]
 
@@ -25,6 +26,8 @@ volumetric_fog_sky_affect = 0.5
 
 [node name="Game" type="Node"]
 script = ExtResource("1_6yxjw")
+
+[node name="HUD" parent="." instance=ExtResource("2_ynfm6")]
 
 [node name="Environment" type="Node" parent="."]
 

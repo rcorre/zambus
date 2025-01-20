@@ -23,8 +23,9 @@ const ATTACK_SPEED := 8.0
 @onready var tick_interpolator := $TickInterpolator as TickInterpolator
 @onready var rollback_synchronizer := $RollbackSynchronizer as RollbackSynchronizer
 @onready var head := $Head as Node3D
-@onready var weapon: Weapon = $Head/Weapon
+@onready var hitscan: NetworkHitScan = $Head/NetworkHitScan
 
+var weapon: Weapon
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var health: int = 100
 var death_tick: int = -1
@@ -69,8 +70,15 @@ func _ready():
 	rollback_synchronizer.add_input(input, "aim")
 	rollback_synchronizer.add_input(input, "look_angle")
 
+	weapon = preload("res://scenes/weapons/Pistol.tscn").instantiate()
+	model.equip(weapon)
 	if is_local:
 		model.camera.make_current()
+		Global.local_player_spawned.emit(self)
+
+# Number of degrees bullets will spread from center
+func gun_spread() -> float:
+	return 4.0 + (1.0 - action_progress * 4.0)
 
 func _tick(_delta: float, _tick_num: int):
 	model.set_velocity(velocity)
@@ -150,7 +158,7 @@ func handle_melee_action(delta: float):
 					action_progress = 0.0
 			Action.ATTACK:
 				prints("Completed attack")
-				weapon.fire()
+				hitscan.fire_range(weapon.hitscan_range)
 				action = Action.RECOIL
 				action_progress = 0.0
 			Action.RECOIL:
@@ -168,12 +176,10 @@ func handle_melee_action(delta: float):
 func handle_gun_action(delta: float):
 	if action == Action.NONE:
 		if input.aim:
-			prints("Starting aim")
 			action = Action.AIM
 	elif action == Action.AIM:
 		if input.attack:
-			prints("Starting attack")
-			weapon.fire()
+			hitscan.fire_range(weapon.hitscan_range)
 			action = Action.RECOIL
 			action_progress = 0.0
 		elif input.aim:

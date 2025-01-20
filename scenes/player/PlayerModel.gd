@@ -9,6 +9,9 @@ class_name PlayerModel
 @onready var right_hand: BoneAttachment3D = $Armature/Skeleton3D/RightHand
 @onready var left_hand: BoneAttachment3D = $Armature/Skeleton3D/LeftHand
 
+var weapon: Weapon
+var last_action: Player.Action
+
 func die(local: bool):
 	skel.physical_bones_start_simulation()
 
@@ -46,6 +49,11 @@ func set_action(action: Player.Action, action_progress: float):
 	# action progress should never go outside [0.0, 1.0], but clamp here to be safe
 	var progress := clamp(action_progress, 0.0, 1.0) as float
 
+	if action == Player.Action.RECOIL and action != last_action:
+		weapon.fire()
+
+	last_action = action
+
 	# pistol_action is a 1D blend space going from idle (0.0) -> aim (1.0) -> recoil (2.0)
 	match action:
 		Player.Action.NONE:
@@ -55,8 +63,12 @@ func set_action(action: Player.Action, action_progress: float):
 		Player.Action.RECOIL:
 			anim.set("parameters/pistol_action/blend_position", 2.0 - progress)
 
-func equip():
-	anim.set("parameters/equip/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
+func equip(new_weapon: Weapon):
+	weapon = new_weapon
+	for child in right_hand.get_children():
+		child.queue_free()
+
+	right_hand.add_child(weapon)
 
 func hurt():
 	anim.set("parameters/hurt/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)

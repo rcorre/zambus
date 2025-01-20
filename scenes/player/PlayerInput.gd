@@ -23,10 +23,13 @@ func _input(event: InputEvent) -> void:
 	if !is_multiplayer_authority():
 		return
 
+	var sensitivity := mouse_sensitivity
+	if Input.is_action_pressed("aim"):
+		sensitivity /= 2.0
 	var motion := event as InputEventMouseMotion
 	if motion:
-		mouse_rotation.y = motion.relative.x * mouse_sensitivity
-		mouse_rotation.x = motion.relative.y * mouse_sensitivity
+		mouse_rotation.y = motion.relative.x * sensitivity
+		mouse_rotation.x = motion.relative.y * sensitivity
 		return
 
 	if event.is_action_pressed("escape"):

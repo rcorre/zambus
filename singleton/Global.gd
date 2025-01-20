@@ -19,5 +19,9 @@ const SERVER_STEP_DURATION := SERVER_STEP / 60.0
 # For example, a guard value of 8 blocks attacks in a PI/8 arc
 const GUARD_ANGLE := PI / 32.0
 
+# Called by Player class
+@warning_ignore("UNUSED_SIGNAL")
+signal local_player_spawned(player: Player)
+
 # Set from Game, just used for easy access in print messages
 var current_frame: int
