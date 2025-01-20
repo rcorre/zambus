@@ -3,10 +3,11 @@ class_name Zombie
 
 const MAX_HEALTH := 100.0
 const AGGRO_RANGE := 20.0
+const ACCEL := 1.6
+const SPEED := 0.8
 
 @onready var hit_sound: AudioStreamPlayer3D = $HitSound
 
-@export var speed := 0.8
 @export var flinch := 0.0
 
 @onready var model: ZombieModel = $ZombieModel
@@ -67,13 +68,13 @@ func _on_tick(delta: float, _tick: int):
 
 	# Handle look left and right
 	var look_target := transform.looking_at(target.transform.origin, Vector3.UP, true)
-	# TODO: interpolate speed
+	# TODO: interpolate SPEED
 	transform = look_target
 
 	# Zombies only walk in the direction they face
-	var move_target := transform.basis.z.normalized() * speed
-	velocity.x = move_target.x
-	velocity.z = move_target.z
+	var move_target := transform.basis.z.normalized() * SPEED
+	velocity.x = move_toward(velocity.x, move_target.x, ACCEL * delta)
+	velocity.z = move_toward(velocity.z, move_target.z, ACCEL * delta)
 
 	# move_and_slide assumes physics delta
 	# multiplying velocity by NetworkTime.physics_factor compensates for it
