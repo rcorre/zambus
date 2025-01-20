@@ -6,13 +6,22 @@
 [ext_resource type="Script" path="res://scenes/game/ZombieSpawner.gd" id="3_pur83"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_m76yx"]
+sun_angle_max = 3.11
+sun_curve = 3.55857
 
 [sub_resource type="Sky" id="Sky_e76ss"]
 sky_material = SubResource("ProceduralSkyMaterial_m76yx")
 
 [sub_resource type="Environment" id="Environment_xhc6u"]
 background_mode = 2
+background_energy_multiplier = 0.46
 sky = SubResource("Sky_e76ss")
+ambient_light_sky_contribution = 0.1
+ambient_light_energy = 0.4
+glow_enabled = true
+volumetric_fog_enabled = true
+volumetric_fog_length = 256.0
+volumetric_fog_sky_affect = 0.5
 
 [node name="Game" type="Node"]
 script = ExtResource("1_6yxjw")
@@ -20,12 +29,12 @@ script = ExtResource("1_6yxjw")
 [node name="Environment" type="Node" parent="."]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
-transform = Transform3D(0.5, 0.612372, -0.612372, 0, 0.707107, 0.707107, 0.866025, -0.353553, 0.353553, -6.7361, 8.77817, 3.88909)
+transform = Transform3D(0.5, 0.612372, -0.612373, 0, 0.707107, 0.707106, 0.866025, -0.353553, 0.353554, -6.7361, 8.77817, 3.88909)
+light_color = Color(1, 0.981221, 0.991765, 1)
+light_energy = 0.4
+light_indirect_energy = 0.5
+light_volumetric_fog_energy = 0.5
 shadow_enabled = true
-
-[node name="Camera3D" type="Camera3D" parent="Environment"]
-transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 14.3564, 8.86602)
-current = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="Environment"]
 environment = SubResource("Environment_xhc6u")
