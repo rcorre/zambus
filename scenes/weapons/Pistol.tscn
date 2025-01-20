@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://ctrlrbh6bcmy0"]
+
+[ext_resource type="PackedScene" uid="uid://4es5qq4cclwq" path="res://assets/models/weapons/Pistol.blend" id="1_yh1jx"]
+
+[node name="Pistol" instance=ExtResource("1_yh1jx")]

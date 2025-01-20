@@ -10,8 +10,9 @@ var override_mouse: bool = false
 var mouse_rotation: Vector2 = Vector2.ZERO
 var look_angle: Vector2 = Vector2.ZERO
 var movement: Vector2 = Vector2.ZERO
-var attack: bool = false
-var jump: bool = false
+var attack := false
+var aim := false
+var jump := false
 
 func _notification(what):
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
@@ -42,6 +43,7 @@ func _gather():
 
 	jump = Input.is_action_pressed("jump")
 	attack = Input.is_action_pressed("attack")
+	aim = Input.is_action_pressed("aim")
 
 	if override_mouse:
 		look_angle = Vector2.ZERO

@@ -66,12 +66,13 @@ func _ready():
 	rollback_synchronizer.add_input(input, "movement")
 	rollback_synchronizer.add_input(input, "jump")
 	rollback_synchronizer.add_input(input, "attack")
+	rollback_synchronizer.add_input(input, "aim")
 	rollback_synchronizer.add_input(input, "look_angle")
 
 	if is_local:
 		model.camera.make_current()
 
-func _tick(delta: float, _tick_num: int):
+func _tick(_delta: float, _tick_num: int):
 	model.set_velocity(velocity)
 
 	if health <= 0:
@@ -127,11 +128,18 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
 
-	var last_action := action
+	var last_progress := action_progress
+	handle_gun_action(delta)
+	if last_progress < action_progress:
+		# If progress decreased, we started a new action, so reset interpolation
+		tick_interpolator.teleport()
+
+func handle_melee_action(delta: float):
 	if action == Action.NONE:
 		if input.attack:
 			prints("Starting aim")
 			action = Action.AIM
+			action_progress = 0.0
 	elif action_progress >= 1.0:
 		match action:
 			Action.AIM:
@@ -139,12 +147,15 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 					# Hold the attack "charged" until the attack button is released
 					prints("Starting attack")
 					action = Action.ATTACK
+					action_progress = 0.0
 			Action.ATTACK:
 				prints("Completed attack")
 				weapon.fire()
 				action = Action.RECOIL
+				action_progress = 0.0
 			Action.RECOIL:
 				action = Action.NONE
+				action_progress = 0.0
 	else:
 		match action:
 			Action.AIM:
@@ -154,9 +165,27 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 			Action.RECOIL:
 				action_progress += delta * ATTACK_SPEED
 
-	if action != last_action:
-		action_progress = 0.0
-		tick_interpolator.teleport()
+func handle_gun_action(delta: float):
+	if action == Action.NONE:
+		if input.aim:
+			prints("Starting aim")
+			action = Action.AIM
+	elif action == Action.AIM:
+		if input.attack:
+			prints("Starting attack")
+			weapon.fire()
+			action = Action.RECOIL
+			action_progress = 0.0
+		elif input.aim:
+			action_progress = move_toward(action_progress, 1.0, delta * AIM_SPEED)
+		else:
+			action_progress = move_toward(action_progress, 0.0, delta * AIM_SPEED)
+			if action_progress <= 0.0:
+				action = Action.NONE
+	elif action == Action.RECOIL:
+		action_progress += delta * AIM_SPEED
+		if action_progress >= 1.0:
+			action = Action.AIM
 
 func _force_update_is_on_floor():
 	var old_velocity = velocity
