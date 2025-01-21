@@ -103,6 +103,8 @@ func set_health(val: int, impact: Vector3):
 	health = val
 	prints("Zombie", name, " health = ", health)
 	if health <= 0:
+		collision_layer = 0
+		collision_mask = 0
 		model.die(impact)
 		get_tree().create_timer(5.0).timeout.connect(queue_free)
 

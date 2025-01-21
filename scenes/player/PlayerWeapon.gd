@@ -26,4 +26,4 @@ func _on_hit(result: Dictionary):
 	var pos := result.position as Vector3
 	var zombie := result.collider as Zombie
 	if zombie:
-		zombie.damage(damage, global_transform.origin.direction_to(pos))
+		zombie.damage(damage, (damage / 50.0) * global_transform.origin.direction_to(pos))
