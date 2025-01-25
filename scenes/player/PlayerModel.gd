@@ -55,8 +55,12 @@ func set_action(action: Player.Action, action_progress: float):
 	# action progress should never go outside [0.0, 1.0], but clamp here to be safe
 	var progress := clamp(action_progress, 0.0, 1.0) as float
 
-	if action == Player.Action.RECOIL and action != last_action:
+	if action == Player.Action.RELOAD:
+		anim.set("parameters/arm_action/transition_request", "equip")
+	elif action == Player.Action.RECOIL and action != last_action:
 		weapon.fire()
+	else:
+		anim.set("parameters/arm_action/transition_request", "pistol_idle")
 
 	last_action = action
 

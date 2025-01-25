@@ -9,8 +9,7 @@ var override_mouse: bool = false
 var mouse_rotation: Vector2 = Vector2.ZERO
 var look_angle: Vector2 = Vector2.ZERO
 var movement: Vector2 = Vector2.ZERO
-var attack := false
-var aim := false
+var action: Player.Action
 var stance: Player.Stance
 
 var sprint := false
@@ -41,8 +40,14 @@ func _input(event: InputEvent) -> void:
 func _gather():
 	movement = Input.get_vector("left", "right", "forward", "backward")
 
-	attack = Input.is_action_pressed("attack")
-	aim = Input.is_action_pressed("aim")
+	if Input.is_action_pressed("attack"):
+		action = Player.Action.ATTACK
+	elif Input.is_action_pressed("reload"):
+		action = Player.Action.RELOAD
+	elif Input.is_action_pressed("aim"):
+		action = Player.Action.AIM
+	else:
+		action = Player.Action.NONE
 
 	if Input.is_action_pressed("sprint") and Input.is_action_pressed("forward"):
 		stance = Player.Stance.SPRINT

@@ -14,6 +14,7 @@ enum Action {
 	AIM,
 	ATTACK,
 	RECOIL,
+	RELOAD,
 }
 
 const ACCEL := 16.0
@@ -22,6 +23,7 @@ const WALK_SPEED := 4.0
 const SPRINT_SPEED := 6.0
 const AIM_SPEED := 4.0
 const ATTACK_SPEED := 8.0
+const RELOAD_SPEED := 0.5
 
 @onready var model: PlayerModel = $ThirdPersonModel
 @onready var display_name := $DisplayNameLabel3D as Label3D
@@ -166,14 +168,14 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 
 func handle_melee_action(delta: float):
 	if action == Action.NONE:
-		if input.attack:
+		if input.action == Action.ATTACK:
 			prints("Starting aim")
 			action = Action.AIM
 			action_progress = 0.0
 	elif action_progress >= 1.0:
 		match action:
 			Action.AIM:
-				if !input.attack:
+				if input.action != Action.ATTACK:
 					# Hold the attack "charged" until the attack button is released
 					prints("Starting attack")
 					action = Action.ATTACK
@@ -197,14 +199,16 @@ func handle_melee_action(delta: float):
 
 func handle_gun_action(delta: float):
 	if action == Action.NONE:
-		if input.aim:
+		if input.action == Action.AIM:
 			action = Action.AIM
+		elif input.action == Action.RELOAD:
+			action = Action.RELOAD
 	elif action == Action.AIM:
-		if input.attack:
+		if input.action == Action.ATTACK:
 			hitscan.hitscan(weapon.hitscan_range, gun_spread_degrees())
 			action = Action.RECOIL
 			action_progress = 0.0
-		elif input.aim:
+		elif input.action == Action.AIM:
 			action_progress = move_toward(action_progress, 1.0, delta * AIM_SPEED)
 		else:
 			action_progress = move_toward(action_progress, 0.0, delta * AIM_SPEED)
@@ -214,6 +218,11 @@ func handle_gun_action(delta: float):
 		action_progress += delta * AIM_SPEED
 		if action_progress >= 1.0:
 			action = Action.AIM
+	elif action == Action.RELOAD:
+		action_progress += delta * RELOAD_SPEED
+		if action_progress >= 1.0:
+			action = Action.NONE
+			action_progress = 0.0
 
 func _force_update_is_on_floor():
 	var old_velocity = velocity
