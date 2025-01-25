@@ -1,6 +1,9 @@
 extends Node3D
 class_name PlayerModel
 
+const BASE_FOV := 90.0
+const AIM_FOV := 70.0
+
 @onready var camera: Camera3D = $Armature/Skeleton3D/Camera_2/Camera_2
 
 @onready var anim: AnimationTree = $AnimationTree
@@ -58,8 +61,10 @@ func set_action(action: Player.Action, action_progress: float):
 	match action:
 		Player.Action.NONE:
 			anim.set("parameters/pistol_action/blend_position", 0.0)
+			camera.fov = BASE_FOV
 		Player.Action.AIM:
 			anim.set("parameters/pistol_action/blend_position", progress)
+			camera.fov = lerp(BASE_FOV, AIM_FOV, progress)
 		Player.Action.RECOIL:
 			anim.set("parameters/pistol_action/blend_position", 2.0 - progress)
 

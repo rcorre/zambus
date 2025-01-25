@@ -138,10 +138,10 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
 
-	var last_progress := action_progress
+	var last_action := action
 	handle_gun_action(delta)
-	if last_progress < action_progress:
-		# If progress decreased, we started a new action, so reset interpolation
+	if action != last_action:
+		# we started a new action, so reset interpolation
 		tick_interpolator.teleport()
 
 func handle_melee_action(delta: float):
