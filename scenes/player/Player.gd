@@ -46,6 +46,7 @@ var look_y := 0.0
 var stance: Stance
 var action: Action
 var action_progress := 0.0
+var ammo := 0
 
 func _enter_tree():
 	add_to_group(GROUP)
@@ -72,6 +73,7 @@ func _ready():
 	rollback_synchronizer.add_state(self, "stance")
 	rollback_synchronizer.add_state(self, "action")
 	rollback_synchronizer.add_state(self, "action_progress")
+	rollback_synchronizer.add_state(self, "ammo")
 
 	rollback_synchronizer.add_input(input, "movement")
 	rollback_synchronizer.add_input(input, "attack")
@@ -205,9 +207,14 @@ func handle_gun_action(delta: float):
 			action = Action.RELOAD
 	elif action == Action.AIM:
 		if input.action == Action.ATTACK:
-			hitscan.hitscan(weapon.hitscan_range, gun_spread_degrees())
-			action = Action.RECOIL
-			action_progress = 0.0
+			if ammo > 0:
+				ammo -= 1
+				hitscan.hitscan(weapon.hitscan_range, gun_spread_degrees())
+				action = Action.RECOIL
+				action_progress = 0.0
+			else:
+				action = Action.RELOAD
+				action_progress = 0.0
 		elif input.action == Action.AIM:
 			action_progress = move_toward(action_progress, 1.0, delta * AIM_SPEED)
 		else:
@@ -221,6 +228,7 @@ func handle_gun_action(delta: float):
 	elif action == Action.RELOAD:
 		action_progress += delta * RELOAD_SPEED
 		if action_progress >= 1.0:
+			ammo = weapon.mag_size
 			action = Action.NONE
 			action_progress = 0.0
 

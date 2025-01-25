@@ -57,6 +57,8 @@ func set_action(action: Player.Action, action_progress: float):
 
 	if action == Player.Action.RELOAD:
 		anim.set("parameters/arm_action/transition_request", "equip")
+		if action != last_action:
+			weapon.reload()
 	elif action == Player.Action.RECOIL and action != last_action:
 		weapon.fire()
 	else:

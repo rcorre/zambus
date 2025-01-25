@@ -1,9 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://ctrlrbh6bcmy0"]
+[gd_scene load_steps=13 format=3 uid="uid://ctrlrbh6bcmy0"]
 
 [ext_resource type="PackedScene" uid="uid://4es5qq4cclwq" path="res://assets/models/weapons/Pistol.blend" id="1_yh1jx"]
 [ext_resource type="Script" path="res://scenes/weapons/Weapon.gd" id="2_bcc02"]
 [ext_resource type="Texture2D" uid="uid://dk5tw4hcntf4t" path="res://assets/textures/muzzle_02.png" id="3_5so45"]
 [ext_resource type="AudioStream" uid="uid://b7212llttj0ue" path="res://assets/sounds/pistol_shot.wav" id="4_07pk1"]
+[ext_resource type="AudioStream" uid="uid://bbu7nwfr08mfr" path="res://assets/sounds/pistol_reload.wav" id="5_f1ooo"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_0pc4i"]
 
@@ -92,10 +93,30 @@ tracks/2/keys = {
 "values": [4.0, 0.0]
 }
 
+[sub_resource type="Animation" id="Animation_k2kx3"]
+resource_name = "reload"
+length = 3.0
+tracks/0/type = "audio"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FireSound")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": [{
+"end_offset": 0.0,
+"start_offset": 0.0,
+"stream": ExtResource("5_f1ooo")
+}],
+"times": PackedFloat32Array(0)
+}
+tracks/0/use_blend = true
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_rxjje"]
 _data = {
 "RESET": SubResource("Animation_0nc5c"),
-"fire": SubResource("Animation_k5v7o")
+"fire": SubResource("Animation_k5v7o"),
+"reload": SubResource("Animation_k2kx3")
 }
 
 [node name="Pistol" instance=ExtResource("1_yh1jx")]
@@ -114,6 +135,7 @@ skeleton = NodePath("../..")
 surface_material_override/0 = SubResource("StandardMaterial3D_30k1g")
 
 [node name="FireSound" type="AudioStreamPlayer3D" parent="." index="2"]
+bus = &"Sound"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." index="3"]
 libraries = {
