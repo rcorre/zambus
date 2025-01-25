@@ -24,7 +24,10 @@ func die(local: bool):
 		if death_cam:
 			death_cam.make_current()
 
-func set_velocity(vel: Vector3):
+func set_velocity(vel: Vector3, stance: Player.Stance):
+	var stance_name := (Player.Stance.keys()[stance] as String).to_lower()
+	anim.set("parameters/stance/transition_request", stance_name)
+
 	# vel is global, so un-rotate to get local velocity
 	# X is flipped from the player due to camera orientation
 	var speed_mult: float = anim.get("parameters/move_speed/scale")

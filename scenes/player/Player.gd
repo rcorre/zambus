@@ -3,6 +3,12 @@ class_name Player
 
 const GROUP := "player"
 
+enum Stance {
+	STAND,
+	CROUCH,
+	SPRINT,
+}
+
 enum Action {
 	NONE,
 	AIM,
@@ -11,11 +17,11 @@ enum Action {
 }
 
 const ACCEL := 16.0
-const SPEED := 4.0
+const CROUCH_SPEED := 4.0
+const WALK_SPEED := 4.0
+const SPRINT_SPEED := 6.0
 const AIM_SPEED := 4.0
 const ATTACK_SPEED := 8.0
-
-@export var jump_strength := 5.0
 
 @onready var model: PlayerModel = $ThirdPersonModel
 @onready var display_name := $DisplayNameLabel3D as Label3D
@@ -35,6 +41,7 @@ var is_local := false
 
 # Rollback properties
 var look_y := 0.0
+var stance: Stance
 var action: Action
 var action_progress := 0.0
 
@@ -60,13 +67,14 @@ func _ready():
 	rollback_synchronizer.add_state(self, "velocity")
 	rollback_synchronizer.add_state(self, "did_respawn")
 	rollback_synchronizer.add_state(self, "look_y")
+	rollback_synchronizer.add_state(self, "stance")
 	rollback_synchronizer.add_state(self, "action")
 	rollback_synchronizer.add_state(self, "action_progress")
 
 	rollback_synchronizer.add_input(input, "movement")
-	rollback_synchronizer.add_input(input, "jump")
 	rollback_synchronizer.add_input(input, "attack")
 	rollback_synchronizer.add_input(input, "aim")
+	rollback_synchronizer.add_input(input, "stance")
 	rollback_synchronizer.add_input(input, "look_angle")
 
 	weapon = preload("res://scenes/weapons/Pistol.tscn").instantiate()
@@ -83,7 +91,7 @@ func gun_drawn() -> bool:
 	return action == Action.AIM or action == Action.RECOIL
 
 func _tick(_delta: float, _tick_num: int):
-	model.set_velocity(velocity)
+	model.set_velocity(velocity, stance)
 
 	if health <= 0:
 		deaths += 1
@@ -111,10 +119,7 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 
 	# Gravity
 	_force_update_is_on_floor()
-	if is_on_floor():
-		if input.jump:
-			velocity.y = jump_strength
-	else:
+	if not is_on_floor():
 		velocity.y -= gravity * delta
 
 	# Handle look left and right
@@ -125,10 +130,24 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	model.set_look_y(look_y)
 
 	# Apply movement
-	var speed := SPEED
-	if action == Action.AIM || action == Action.ATTACK || action == Action.RECOIL:
-		speed /= 2
-	var move_target := (transform.basis * Vector3(input.movement.x, 0, input.movement.y)).normalized() * speed
+	stance = input.stance
+
+	var speed := WALK_SPEED
+	match stance:
+		Stance.SPRINT:
+			speed = SPRINT_SPEED
+		Stance.CROUCH:
+			speed = CROUCH_SPEED
+	match action:
+		Action.AIM, Action.ATTACK, Action.RECOIL:
+			speed /= 2
+
+	var input_dir := Vector3(input.movement.x, 0, input.movement.y)
+	if stance == Stance.SPRINT:
+		action = Action.NONE
+		input_dir = Vector3.FORWARD
+	var move_target := (transform.basis * input_dir).normalized() * speed
+
 	velocity.x = move_toward(velocity.x, move_target.x, ACCEL * delta)
 	velocity.z = move_toward(velocity.z, move_target.z, ACCEL * delta)
 
@@ -138,11 +157,12 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
 
-	var last_action := action
-	handle_gun_action(delta)
-	if action != last_action:
-		# we started a new action, so reset interpolation
-		tick_interpolator.teleport()
+	if stance != Stance.SPRINT:
+		var last_action := action
+		handle_gun_action(delta)
+		if action != last_action:
+			# we started a new action, so reset interpolation
+			tick_interpolator.teleport()
 
 func handle_melee_action(delta: float):
 	if action == Action.NONE:
