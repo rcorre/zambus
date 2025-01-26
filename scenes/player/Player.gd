@@ -46,6 +46,7 @@ var look_y := 0.0
 var stance: Stance
 var action: Action
 var action_progress := 0.0
+var stamina := 100.0
 var ammo := 0
 
 func _enter_tree():
@@ -62,6 +63,7 @@ func _ready():
 	tick_interpolator.add_property(self, "transform")
 	tick_interpolator.add_property(self, "look_y")
 	tick_interpolator.add_property(self, "action_progress")
+	tick_interpolator.add_property(self, "stamina")
 
 	# For rollback, sync the minimum we need
 	# position + x/y rotation, not the whole transform
@@ -73,6 +75,7 @@ func _ready():
 	rollback_synchronizer.add_state(self, "stance")
 	rollback_synchronizer.add_state(self, "action")
 	rollback_synchronizer.add_state(self, "action_progress")
+	rollback_synchronizer.add_state(self, "stamina")
 	rollback_synchronizer.add_state(self, "ammo")
 
 	rollback_synchronizer.add_input(input, "movement")
@@ -90,6 +93,15 @@ func _ready():
 # Number of degrees bullets will spread from center
 func gun_spread_degrees() -> float:
 	return 12.0 - action_progress * 8.0 + velocity.length() * 4.0
+
+func stamina_regen() -> float:
+	return 10.0
+
+func stamina_cost_sprint() -> float:
+	return 15.0
+
+func max_stamina() -> float:
+	return 100.0
 
 func gun_drawn() -> bool:
 	return action == Action.AIM or action == Action.RECOIL
@@ -134,7 +146,14 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	model.set_look_y(look_y)
 
 	# Apply movement
-	stance = input.stance
+	match input.stance:
+		Stance.STAND:
+			stance = Stance.STAND
+		Stance.CROUCH:
+			stance = Stance.CROUCH
+		Stance.SPRINT:
+			if stamina >= 10.0:
+				stance = Stance.SPRINT
 
 	var speed := WALK_SPEED
 	match stance:
@@ -150,6 +169,14 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	if stance == Stance.SPRINT:
 		action = Action.NONE
 		input_dir = Vector3.FORWARD
+		stamina -= stamina_cost_sprint() * delta
+		if stamina <= 0.0:
+			stance = Stance.STAND
+	else:
+		stamina += stamina_regen() * delta
+
+	stamina = clampf(stamina, 0, max_stamina())
+
 	var move_target := (transform.basis * input_dir).normalized() * speed
 
 	velocity.x = move_toward(velocity.x, move_target.x, ACCEL * delta)
