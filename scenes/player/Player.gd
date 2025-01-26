@@ -18,7 +18,7 @@ enum Action {
 }
 
 const ACCEL := 16.0
-const CROUCH_SPEED := 4.0
+const CROUCH_SPEED := 2.0
 const WALK_SPEED := 4.0
 const SPRINT_SPEED := 6.0
 const AIM_SPEED := 4.0
@@ -48,6 +48,7 @@ var action: Action
 var action_progress := 0.0
 var stamina := 100.0
 var ammo := 0
+var spread := 0.0
 
 func _enter_tree():
 	add_to_group(GROUP)
@@ -64,6 +65,7 @@ func _ready():
 	tick_interpolator.add_property(self, "look_y")
 	tick_interpolator.add_property(self, "action_progress")
 	tick_interpolator.add_property(self, "stamina")
+	rollback_synchronizer.add_state(self, "spread")
 
 	# For rollback, sync the minimum we need
 	# position + x/y rotation, not the whole transform
@@ -77,6 +79,7 @@ func _ready():
 	rollback_synchronizer.add_state(self, "action_progress")
 	rollback_synchronizer.add_state(self, "stamina")
 	rollback_synchronizer.add_state(self, "ammo")
+	rollback_synchronizer.add_state(self, "spread")
 
 	rollback_synchronizer.add_input(input, "movement")
 	rollback_synchronizer.add_input(input, "attack")
@@ -92,7 +95,7 @@ func _ready():
 
 # Number of degrees bullets will spread from center
 func gun_spread_degrees() -> float:
-	return 12.0 - action_progress * 8.0 + velocity.length() * 4.0
+	return spread + velocity.length() * weapon.move_spread / WALK_SPEED
 
 func stamina_regen() -> float:
 	return 10.0
@@ -102,6 +105,12 @@ func stamina_cost_sprint() -> float:
 
 func max_stamina() -> float:
 	return 100.0
+
+func recoil_recovery() -> float:
+	return 4.0
+
+func aim_speed() -> float:
+	return 8.0
 
 func gun_drawn() -> bool:
 	return action == Action.AIM or action == Action.RECOIL
@@ -132,6 +141,8 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 		did_respawn = true
 	else:
 		did_respawn = false
+
+	spread = clampf(spread - aim_speed() * delta, weapon.min_spread, weapon.max_spread)
 
 	# Gravity
 	_force_update_is_on_floor()
@@ -230,6 +241,7 @@ func handle_gun_action(delta: float):
 	if action == Action.NONE:
 		if input.action == Action.AIM:
 			action = Action.AIM
+			spread = weapon.max_spread
 		elif input.action == Action.RELOAD:
 			action = Action.RELOAD
 	elif action == Action.AIM:
@@ -237,6 +249,7 @@ func handle_gun_action(delta: float):
 			if ammo > 0:
 				ammo -= 1
 				hitscan.hitscan(weapon.hitscan_range, gun_spread_degrees())
+				spread += weapon.recoil
 				action = Action.RECOIL
 				action_progress = 0.0
 			else:
