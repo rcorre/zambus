@@ -15,6 +15,8 @@ enum Action {
 	ATTACK,
 	RECOIL,
 	RELOAD,
+	STOW,
+	DRAW,
 }
 
 const ACCEL := 16.0
@@ -112,8 +114,11 @@ func recoil_recovery() -> float:
 func aim_speed() -> float:
 	return 8.0
 
+func equip_speed() -> float:
+	return 1.0
+
 func gun_drawn() -> bool:
-	return action == Action.AIM or action == Action.RECOIL
+	return weapon.is_gun() and action in [Action.AIM, Action.RECOIL]
 
 func _tick(_delta: float, _tick_num: int):
 	model.set_velocity(velocity, stance)
@@ -156,7 +161,11 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	look_y = clamp(look_y + input.look_angle.y, -1.57, 1.57)
 	model.set_look_y(look_y)
 
-	# Apply movement
+	if input.equip >= 0:
+		prints("equip")
+		weapon = preload("res://scenes/weapons/Bat.tscn").instantiate()
+		action = Action.STOW
+
 	match input.stance:
 		Stance.STAND:
 			stance = Stance.STAND
@@ -199,29 +208,48 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
 
-	if stance != Stance.SPRINT:
+	if action == Action.STOW:
+		action_progress += equip_speed() * delta
+		if action_progress >= 1.0:
+			action_progress = 0.0
+			tick_interpolator.teleport()
+			action = Action.DRAW
+			model.equip(weapon)
+	elif action == Action.DRAW:
+		action_progress += equip_speed() * delta
+		if action_progress >= 1.0:
+			action_progress = 0.0
+			tick_interpolator.teleport()
+			action = Action.NONE
+	elif stance != Stance.SPRINT:
 		var last_action := action
-		handle_gun_action(delta)
+		match weapon.kind:
+			Weapon.Kind.MELEE_1H, Weapon.Kind.MELEE_2H:
+				handle_melee_action(delta)
+			Weapon.Kind.PISTOL:
+				handle_gun_action(delta)
 		if action != last_action:
 			# we started a new action, so reset interpolation
 			tick_interpolator.teleport()
 
 func handle_melee_action(delta: float):
 	if action == Action.NONE:
-		if input.action == Action.ATTACK:
-			prints("Starting aim")
+		if input.action == Action.ATTACK and stamina > weapon.stamina_cost:
 			action = Action.AIM
 			action_progress = 0.0
 	elif action_progress >= 1.0:
 		match action:
 			Action.AIM:
+				# Hold the attack "charged" until the attack button is released
 				if input.action != Action.ATTACK:
-					# Hold the attack "charged" until the attack button is released
-					prints("Starting attack")
-					action = Action.ATTACK
-					action_progress = 0.0
+					if stamina > weapon.stamina_cost:
+						action = Action.ATTACK
+						action_progress = 0.0
+						stamina -= weapon.stamina_cost
+					else:
+						action = Action.RECOIL
+						action_progress = 0.0
 			Action.ATTACK:
-				prints("Completed attack")
 				hitscan.hitscan(weapon.hitscan_range, 0.0)
 				action = Action.RECOIL
 				action_progress = 0.0

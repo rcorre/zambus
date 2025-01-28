@@ -11,6 +11,7 @@ var look_angle: Vector2 = Vector2.ZERO
 var movement: Vector2 = Vector2.ZERO
 var action: Player.Action
 var stance: Player.Stance
+var equip := -1  # -1 means don't equip anything, non-negative means equip item in that slot number
 
 var sprint := false
 var crouch := false
@@ -55,6 +56,11 @@ func _gather():
 		stance = Player.Stance.CROUCH
 	else:
 		stance = Player.Stance.STAND
+
+	if Input.is_action_pressed("next_weapon"):
+		equip = 0
+	else:
+		equip = -1
 
 	if override_mouse:
 		look_angle = Vector2.ZERO

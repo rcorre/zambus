@@ -37,35 +37,37 @@ func set_velocity(vel: Vector3, stance: Player.Stance):
 func set_look_y(look: float):
 	anim.set("parameters/look_y/add_amount", 2.0 * look / PI)
 
-# func set_action(action: Player.Action, action_progress: float):
-# 	match action:
-# 		Player.Action.NONE:
-# 			anim.set("parameters/attack/blend_amount", 0.0)
-# 			anim.set("parameters/attack_swing/blend_position", 0.0)
-# 		Player.Action.AIM:
-# 			anim.set("parameters/attack/blend_amount", action_progress)
-# 		Player.Action.ATTACK:
-# 			anim.set("parameters/attack/blend_amount", 1.0)
-# 			anim.set("parameters/attack_swing/blend_position", action_progress)
-# 		Player.Action.RECOIL:
-# 			anim.set("parameters/attack/blend_amount", 1.0 - action_progress)
-# 			anim.set("parameters/attack_swing/blend_position", 1.0)
+
 
 func set_action(action: Player.Action, action_progress: float):
 	# action progress should never go outside [0.0, 1.0], but clamp here to be safe
 	var progress := clamp(action_progress, 0.0, 1.0) as float
 
-	if action == Player.Action.RELOAD:
+	if action == Player.Action.STOW:
 		anim.set("parameters/arm_action/transition_request", "equip")
-		if action != last_action:
-			weapon.reload()
-	elif action == Player.Action.RECOIL and action != last_action:
-		weapon.fire()
-	else:
-		anim.set("parameters/arm_action/transition_request", "pistol_idle")
+		return
+
+	match weapon.kind:
+		Weapon.Kind.MELEE_1H, Weapon.Kind.MELEE_2H:
+			handle_melee_action(action, progress)
+		Weapon.Kind.PISTOL:
+			handle_pistol_action(action, progress)
 
 	last_action = action
 
+func handle_melee_action(action: Player.Action, progress: float):
+	match action:
+		Player.Action.NONE:
+			anim.set("parameters/melee_1h_action/blend_position", 0.0)
+		Player.Action.AIM:
+			anim.set("parameters/melee_1h_action/blend_position", progress)
+		Player.Action.ATTACK:
+			weapon.fire()
+			anim.set("parameters/melee_1h_action/blend_position", 1.0 + progress)
+		Player.Action.RECOIL:
+			anim.set("parameters/melee_1h_action/blend_position", 2.0 + progress)
+
+func handle_pistol_action(action: Player.Action, progress: float):
 	# pistol_action is a 1D blend space going from idle (0.0) -> aim (1.0) -> recoil (2.0)
 	match action:
 		Player.Action.NONE:
@@ -76,13 +78,32 @@ func set_action(action: Player.Action, action_progress: float):
 			camera.fov = lerp(BASE_FOV, AIM_FOV, progress)
 		Player.Action.RECOIL:
 			anim.set("parameters/pistol_action/blend_position", 2.0 - progress)
+			if action != last_action:
+				weapon.fire()
+		Player.Action.RELOAD:
+			anim.set("parameters/arm_action/transition_request", "equip")
+			if action != last_action:
+				weapon.reload()
+
+	if action != Player.Action.RELOAD:
+		anim.set("parameters/arm_action/transition_request", "pistol")
+
+func arm_action() -> String:
+	match weapon.kind:
+		Weapon.Kind.MELEE_1H:
+			return "melee_1h"
+		Weapon.Kind.MELEE_2H:
+			return "melee_2h"
+		Weapon.Kind.PISTOL:
+			return "pistol"
+	return ""
 
 func equip(new_weapon: Weapon):
 	weapon = new_weapon
 	for child in right_hand.get_children():
 		child.queue_free()
-
 	right_hand.add_child(weapon)
+	anim.set("parameters/arm_action/transition_request", arm_action())
 
 func hurt():
 	anim.set("parameters/hurt/request", AnimationNodeOneShot.ONE_SHOT_REQUEST_FIRE)
