@@ -140,7 +140,8 @@ func _process(_delta: float) -> void:
 	model.set_look_y(look_y)
 	model.set_action(action, action_progress)
 
-	if is_local:
+	# Highlight focused item for the local player if not performing any action
+	if is_local and action == Action.NONE:
 		var col := model.interact_ray.get_collider() as Weapon
 		if col:
 			col.focused = true
