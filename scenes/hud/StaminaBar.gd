@@ -15,6 +15,8 @@ func _process(_delta: float) -> void:
 
 func _draw() -> void:
 	# Fade out as we fill
+	if not player:
+		return
 	var color := Color(1.0, 1.0, 1.0, 0.7).lerp(Color.TRANSPARENT, player.stamina / player.max_stamina())
 	var dist := player.stamina / 2.0
 	draw_line(Vector2.LEFT * dist, Vector2.RIGHT * dist, color, 2.0)

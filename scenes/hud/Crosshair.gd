@@ -16,7 +16,7 @@ func _process(_delta: float) -> void:
 
 func _draw() -> void:
 	var cam := get_viewport().get_camera_3d()
-	if not (cam):
+	if not cam or not player:
 		return
 	var bounds = get_viewport_rect()
 	var dist: float

@@ -84,11 +84,11 @@ func _ready():
 	rollback_synchronizer.add_state(self, "ammo")
 	rollback_synchronizer.add_state(self, "spread")
 
-	rollback_synchronizer.add_input(input, "movement")
-	rollback_synchronizer.add_input(input, "attack")
-	rollback_synchronizer.add_input(input, "aim")
-	rollback_synchronizer.add_input(input, "stance")
 	rollback_synchronizer.add_input(input, "look_angle")
+	rollback_synchronizer.add_input(input, "movement")
+	rollback_synchronizer.add_input(input, "action")
+	rollback_synchronizer.add_input(input, "stance")
+	rollback_synchronizer.add_input(input, "equip")
 
 	weapon = preload("res://scenes/weapons/Pistol.tscn").instantiate()
 	model.equip(weapon)

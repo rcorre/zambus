@@ -2,19 +2,18 @@ extends BaseNetInput
 class_name PlayerInput
 @export var mouse_sensitivity: float = 0.5
 
-# Config variables
+# Local variables
 var override_mouse: bool = false
-
-# Input variables
 var mouse_rotation: Vector2 = Vector2.ZERO
+var sprint := false
+var crouch := false
+
+# Sync'd variables
 var look_angle: Vector2 = Vector2.ZERO
 var movement: Vector2 = Vector2.ZERO
 var action: Player.Action
 var stance: Player.Stance
 var equip := -1  # -1 means don't equip anything, non-negative means equip item in that slot number
-
-var sprint := false
-var crouch := false
 
 func _notification(what):
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
