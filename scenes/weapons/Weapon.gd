@@ -21,6 +21,9 @@ enum Kind {
 
 var outline_material: StandardMaterial3D
 
+# Set every frame by Player if under the cursor
+var focused := false
+
 func _ready() -> void:
 	collision_layer = Global.CollisionLayer.INTERACT
 	monitoring = false
@@ -47,6 +50,10 @@ func _ready() -> void:
 	outline_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	outline_material.albedo_color.a = 0
 
+func _process(delta: float) -> void:
+	var albedo_target := 1 if focused else 0
+	focused = false
+	outline_material.albedo_color.a = move_toward(outline_material.albedo_color.a, albedo_target, delta * 3.0)
 
 func equip() -> void:
 	collision_layer = 0

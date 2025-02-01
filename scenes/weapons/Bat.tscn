@@ -32,8 +32,8 @@ _data = {
 }
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_8yi02"]
-height = 0.893791
-radius = 0.0384154
+height = 0.991532
+radius = 0.0553365
 
 [node name="Bat" instance=ExtResource("1_her11")]
 

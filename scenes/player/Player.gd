@@ -140,6 +140,11 @@ func _process(_delta: float) -> void:
 	model.set_look_y(look_y)
 	model.set_action(action, action_progress)
 
+	if is_local:
+		var col := model.interact_ray.get_collider() as Weapon
+		if col:
+			col.focused = true
+
 func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	# Handle respawn
 	if tick == death_tick:
@@ -210,13 +215,10 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	velocity /= NetworkTime.physics_factor
 
 	if input.action == Action.INTERACT:
-		prints("interact")
 		if multiplayer.is_server():
-			prints("server")
 			model.interact_ray.force_raycast_update()
 			var col := model.interact_ray.get_collider() as Weapon
 			if col:
-				prints("col")
 				col.take.rpc()
 	elif action == Action.STOW:
 		action_progress += equip_speed() * delta
