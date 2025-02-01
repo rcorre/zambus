@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/Pistol.blend-3b472914c88f0918e9d0c51a2795cb5e
 
 [params]
 
-nodes/root_type=""
+nodes/root_type="Weapon"
 nodes/root_name=""
 nodes/apply_root_scale=true
 nodes/root_scale=1.0

@@ -5,6 +5,7 @@ const BASE_FOV := 90.0
 const AIM_FOV := 70.0
 
 @onready var camera: Camera3D = $Armature/Skeleton3D/Camera_2/Camera_2
+@onready var interact_ray: RayCast3D = $Armature/Skeleton3D/Camera_2/InteractRay
 
 @onready var anim: AnimationTree = $AnimationTree
 @onready var skel: Skeleton3D = $Armature/Skeleton3D
@@ -36,8 +37,6 @@ func set_velocity(vel: Vector3, stance: Player.Stance):
 
 func set_look_y(look: float):
 	anim.set("parameters/look_y/add_amount", 2.0 * look / PI)
-
-
 
 func set_action(action: Player.Action, action_progress: float):
 	# action progress should never go outside [0.0, 1.0], but clamp here to be safe

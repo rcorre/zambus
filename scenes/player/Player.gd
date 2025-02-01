@@ -17,6 +17,7 @@ enum Action {
 	RELOAD,
 	STOW,
 	DRAW,
+	INTERACT,
 }
 
 const ACCEL := 16.0
@@ -162,8 +163,8 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	model.set_look_y(look_y)
 
 	if input.equip >= 0:
-		prints("equip")
-		weapon = preload("res://scenes/weapons/Bat.tscn").instantiate()
+		weapon = preload("res://scenes/weapons/Bat.tscn").instantiate() as Weapon
+		weapon.equip()
 		action = Action.STOW
 
 	match input.stance:
@@ -208,7 +209,16 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
 
-	if action == Action.STOW:
+	if input.action == Action.INTERACT:
+		prints("interact")
+		if multiplayer.is_server():
+			prints("server")
+			model.interact_ray.force_raycast_update()
+			var col := model.interact_ray.get_collider() as Weapon
+			if col:
+				prints("col")
+				col.take.rpc()
+	elif action == Action.STOW:
 		action_progress += equip_speed() * delta
 		if action_progress >= 1.0:
 			action_progress = 0.0

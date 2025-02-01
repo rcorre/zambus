@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/Bat.blend-60b4063f99d4ac973d22aefe474693e1.sc
 
 [params]
 
-nodes/root_type=""
+nodes/root_type="Weapon"
 nodes/root_name=""
 nodes/apply_root_scale=true
 nodes/root_scale=1.0
