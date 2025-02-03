@@ -1,8 +1,6 @@
 extends NetworkWeaponHitscan3D
 class_name NetworkHitScan
 
-@onready var input: PlayerInput = $"../../Input"
-
 var damage := 35
 var fire_cooldown: float = 0.25
 var last_fire: int = -1
@@ -34,9 +32,6 @@ func hitscan(hitscan_range: float, spread_degrees: float) -> void:
 
 func _can_fire() -> bool:
 	return NetworkTime.seconds_between(last_fire, NetworkTime.tick) >= fire_cooldown
-
-func _can_peer_use(peer_id: int) -> bool:
-	return peer_id == input.get_multiplayer_authority()
 
 func _on_fire():
 	last_fire = NetworkTime.tick

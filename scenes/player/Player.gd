@@ -35,6 +35,7 @@ const RELOAD_SPEED := 0.5
 @onready var rollback_synchronizer := $RollbackSynchronizer as RollbackSynchronizer
 @onready var hitscan: NetworkHitScan = model.camera.get_node("NetworkHitScan")
 
+var inventory: Array[Item.ID]
 var weapon: Weapon
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var health: int = 100
@@ -132,6 +133,22 @@ func _after_tick_loop():
 	if did_respawn:
 		tick_interpolator.teleport()
 
+func equip(idx: int) -> void:
+	if input.equip >= inventory.size():
+		push_warning("Equip request for item", input.equip, "out of range", inventory.size())
+		return
+	var item_id := inventory[idx]
+	var item := Item.load(item_id) as Weapon
+	if not item:
+		push_warning("Cannot equip", item)
+		return
+	weapon = item
+	action = Action.STOW
+
+@rpc("authority", "call_local", "reliable")
+func take_item(item: Item.ID) -> void:
+	inventory.push_back(item)
+
 # TODO: setting look in both process and _rollback_tick may not be correct.
 # I'm doing this to have both accurate aiming and a smooth camera.
 # I may need a separate first-person model.
@@ -142,7 +159,7 @@ func _process(_delta: float) -> void:
 
 	# Highlight focused item for the local player if not performing any action
 	if is_local and action == Action.NONE:
-		var col := model.interact_ray.get_collider() as Weapon
+		var col := model.interact_ray.get_collider() as Pickup
 		if col:
 			col.focused = true
 
@@ -168,10 +185,9 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	look_y = clamp(look_y + input.look_angle.y, -1.57, 1.57)
 	model.set_look_y(look_y)
 
+	# TODO: should go in tick instead?
 	if input.equip >= 0:
-		weapon = preload("res://scenes/weapons/Bat.tscn").instantiate() as Weapon
-		weapon.equip()
-		action = Action.STOW
+		equip(input.equip)
 
 	match input.stance:
 		Stance.STAND:
@@ -218,9 +234,10 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	if input.action == Action.INTERACT:
 		if multiplayer.is_server():
 			model.interact_ray.force_raycast_update()
-			var col := model.interact_ray.get_collider() as Weapon
+			var col := model.interact_ray.get_collider() as Pickup
 			if col:
 				col.take.rpc()
+				take_item.rpc(col.item_id)
 	elif action == Action.STOW:
 		action_progress += equip_speed() * delta
 		if action_progress >= 1.0:

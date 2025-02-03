@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bfshwoko470di"]
+[gd_scene load_steps=11 format=3 uid="uid://bfshwoko470di"]
 
 [ext_resource type="Script" path="res://scenes/game/Game.gd" id="1_6yxjw"]
 [ext_resource type="PackedScene" uid="uid://vrso6qncj1nm" path="res://scenes/player/Player.tscn" id="2_p13fk"]
@@ -6,8 +6,7 @@
 [ext_resource type="Script" path="res://scenes/game/PlayerSpawner.gd" id="3_c7rxg"]
 [ext_resource type="Script" path="res://scenes/game/ZombieSpawner.gd" id="3_pur83"]
 [ext_resource type="Script" path="res://scenes/game/ItemSpawner.gd" id="6_rifdt"]
-[ext_resource type="PackedScene" uid="uid://dyg1m6gb6a825" path="res://scenes/weapons/Bat.tscn" id="7_8miee"]
-[ext_resource type="PackedScene" uid="uid://ctrlrbh6bcmy0" path="res://scenes/weapons/Pistol.tscn" id="8_wm6w3"]
+[ext_resource type="Script" path="res://scenes/items/Pickup.gd" id="7_2l0pb"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_m76yx"]
 sun_angle_max = 3.11
@@ -130,8 +129,10 @@ spawn_points = NodePath("../ZombieSpawns")
 [node name="Items" type="Node" parent="."]
 script = ExtResource("6_rifdt")
 
-[node name="Bat" parent="Items" instance=ExtResource("7_8miee")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.34524, 0, 0)
+[node name="Pickup" type="Area3D" parent="Items"]
+script = ExtResource("7_2l0pb")
 
-[node name="Pistol" parent="Items" instance=ExtResource("8_wm6w3")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.34524, 0, 2.30753)
+[node name="Pickup2" type="Area3D" parent="Items"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.28423)
+script = ExtResource("7_2l0pb")
+item_id = 1

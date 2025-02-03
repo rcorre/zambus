@@ -58,8 +58,14 @@ func _gather():
 	else:
 		stance = Player.Stance.STAND
 
-	if Input.is_action_pressed("next_weapon"):
+	if Input.is_action_pressed("equip1"):
 		equip = 0
+	elif Input.is_action_pressed("equip2"):
+		equip = 1
+	elif Input.is_action_pressed("equip3"):
+		equip = 2
+	elif Input.is_action_pressed("equip4"):
+		equip = 3
 	else:
 		equip = -1
 
