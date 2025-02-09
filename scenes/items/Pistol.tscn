@@ -1,6 +1,6 @@
 [gd_scene load_steps=13 format=3 uid="uid://ctrlrbh6bcmy0"]
 
-[ext_resource type="PackedScene" uid="uid://4es5qq4cclwq" path="res://assets/models/weapons/Pistol.blend" id="1_yh1jx"]
+[ext_resource type="PackedScene" uid="uid://4es5qq4cclwq" path="res://assets/models/items/Pistol.blend" id="1_yh1jx"]
 [ext_resource type="Texture2D" uid="uid://dk5tw4hcntf4t" path="res://assets/textures/muzzle_02.png" id="3_5so45"]
 [ext_resource type="AudioStream" uid="uid://b7212llttj0ue" path="res://assets/sounds/pistol_shot.wav" id="4_07pk1"]
 [ext_resource type="AudioStream" uid="uid://bbu7nwfr08mfr" path="res://assets/sounds/pistol_reload.wav" id="5_f1ooo"]
@@ -122,7 +122,6 @@ _data = {
 size = Vector3(0.1, 0.2, 0.3)
 
 [node name="Pistol" instance=ExtResource("1_yh1jx")]
-kind = 2
 
 [node name="MuzzleFlash" type="MeshInstance3D" parent="." index="1"]
 transform = Transform3D(8.47033e-23, 1.74846e-08, 0.4, 0.4, -1.74846e-08, 7.64274e-16, 1.74846e-08, 0.4, -1.74846e-08, 3.49691e-09, 0.0944856, 0.337571)

@@ -91,7 +91,7 @@ func _ready():
 	rollback_synchronizer.add_input(input, "stance")
 	rollback_synchronizer.add_input(input, "equip")
 
-	weapon = preload("res://scenes/weapons/Pistol.tscn").instantiate()
+	weapon = preload("res://scenes/items/Pistol.tscn").instantiate()
 	model.equip(weapon)
 	if is_local:
 		model.camera.make_current()
