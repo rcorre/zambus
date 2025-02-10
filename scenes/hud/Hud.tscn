@@ -1,7 +1,19 @@
-[gd_scene load_steps=3 format=3 uid="uid://b8aqyq4eqn3sm"]
+[gd_scene load_steps=5 format=3 uid="uid://b8aqyq4eqn3sm"]
 
 [ext_resource type="Script" path="res://scenes/hud/Crosshair.gd" id="1_ymsmv"]
 [ext_resource type="Script" path="res://scenes/hud/StaminaBar.gd" id="2_g47kd"]
+[ext_resource type="Texture2D" uid="uid://cw1c0ihg6g5qm" path="res://assets/icons/items/Bat.png" id="3_yd32d"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ys2uc"]
+bg_color = Color(0.6, 0.6, 0.6, 0.313726)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
 [node name="HUD" type="Control"]
 layout_mode = 3
@@ -43,7 +55,77 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
+alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="Button" type="Button" parent="QuickSlots"]
+[node name="ItemSlot1" type="VBoxContainer" parent="QuickSlots"]
 layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Button" type="Button" parent="QuickSlots/ItemSlot1"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"FlatButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_ys2uc")
+icon = ExtResource("3_yd32d")
+
+[node name="Label" type="Label" parent="QuickSlots/ItemSlot1"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "1"
+horizontal_alignment = 1
+
+[node name="ItemSlot2" type="VBoxContainer" parent="QuickSlots"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Button" type="Button" parent="QuickSlots/ItemSlot2"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"FlatButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_ys2uc")
+icon = ExtResource("3_yd32d")
+
+[node name="Label" type="Label" parent="QuickSlots/ItemSlot2"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "1"
+horizontal_alignment = 1
+
+[node name="ItemSlot3" type="VBoxContainer" parent="QuickSlots"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Button" type="Button" parent="QuickSlots/ItemSlot3"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"FlatButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_ys2uc")
+icon = ExtResource("3_yd32d")
+
+[node name="Label" type="Label" parent="QuickSlots/ItemSlot3"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "1"
+horizontal_alignment = 1
+
+[node name="ItemSlot4" type="VBoxContainer" parent="QuickSlots"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Button" type="Button" parent="QuickSlots/ItemSlot4"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_type_variation = &"FlatButton"
+theme_override_styles/normal = SubResource("StyleBoxFlat_ys2uc")
+icon = ExtResource("3_yd32d")
+
+[node name="Label" type="Label" parent="QuickSlots/ItemSlot4"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "1"
+horizontal_alignment = 1

@@ -14,8 +14,9 @@ func _ready() -> void:
 			prints("Skipping", file)
 			continue
 		var scene := load(root.path_join(file)) as PackedScene
-		var item := scene.instantiate()
+		var item := scene.instantiate() as Node3D
 		add_child(item)
+		item.rotate_x(PI / 4.0)
 		fit_camera_to_target(item)
 		await RenderingServer.frame_post_draw
 		var image := viewport.get_texture().get_image()
@@ -24,7 +25,7 @@ func _ready() -> void:
 		prints("Saved to", dst)
 		item.queue_free()
 
-func fit_camera_to_target(target: Node):
+func fit_camera_to_target(target: Node3D):
 	var aabb := AABB()
 
 	for child in target.get_children():
@@ -32,6 +33,8 @@ func fit_camera_to_target(target: Node):
 		if vis and vis.visible:
 			aabb = aabb.merge(vis.get_aabb())
 			vis.get_aabb()
+
+	aabb = target.global_transform * aabb
 
 	# Calculate the distance from the camera to the target
 	camera.size = (max(aabb.size.z, aabb.size.y) / 2.0) * (1 + PADDING)
