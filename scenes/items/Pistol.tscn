@@ -122,6 +122,7 @@ _data = {
 size = Vector3(0.1, 0.2, 0.3)
 
 [node name="Pistol" instance=ExtResource("1_yh1jx")]
+kind = 2
 
 [node name="MuzzleFlash" type="MeshInstance3D" parent="." index="1"]
 transform = Transform3D(8.47033e-23, 1.74846e-08, 0.4, 0.4, -1.74846e-08, 7.64274e-16, 1.74846e-08, 0.4, -1.74846e-08, 3.49691e-09, 0.0944856, 0.337571)

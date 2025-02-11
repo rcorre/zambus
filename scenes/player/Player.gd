@@ -28,6 +28,8 @@ const AIM_SPEED := 4.0
 const ATTACK_SPEED := 8.0
 const RELOAD_SPEED := 0.5
 
+signal inventory_changed
+
 @onready var model: PlayerModel = $ThirdPersonModel
 @onready var display_name := $DisplayNameLabel3D as Label3D
 @onready var input := $Input as PlayerInput
@@ -148,6 +150,7 @@ func equip(idx: int) -> void:
 @rpc("authority", "call_local", "reliable")
 func take_item(item: Item.ID) -> void:
 	inventory.push_back(item)
+	inventory_changed.emit()
 
 # TODO: setting look in both process and _rollback_tick may not be correct.
 # I'm doing this to have both accurate aiming and a smooth camera.

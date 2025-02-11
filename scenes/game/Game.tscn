@@ -131,8 +131,9 @@ script = ExtResource("6_rifdt")
 
 [node name="Pickup" type="Area3D" parent="Items"]
 script = ExtResource("7_2l0pb")
+item_id = 1
 
 [node name="Pickup2" type="Area3D" parent="Items"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.28423)
 script = ExtResource("7_2l0pb")
-item_id = 1
+item_id = 2

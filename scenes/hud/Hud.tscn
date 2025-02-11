@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://b8aqyq4eqn3sm"]
+[gd_scene load_steps=6 format=3 uid="uid://b8aqyq4eqn3sm"]
 
 [ext_resource type="Script" path="res://scenes/hud/Crosshair.gd" id="1_ymsmv"]
 [ext_resource type="Script" path="res://scenes/hud/StaminaBar.gd" id="2_g47kd"]
-[ext_resource type="Texture2D" uid="uid://cw1c0ihg6g5qm" path="res://assets/icons/items/Bat.png" id="3_yd32d"]
+[ext_resource type="Script" path="res://scenes/hud/QuickSlots.gd" id="3_58u1c"]
+[ext_resource type="Texture2D" uid="uid://du7qmp3gpjnjg" path="res://assets/icons/items/None.png" id="4_m3sc2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ys2uc"]
 bg_color = Color(0.6, 0.6, 0.6, 0.313726)
@@ -56,6 +57,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 0
 alignment = 1
+script = ExtResource("3_58u1c")
 metadata/_edit_use_anchors_ = true
 
 [node name="ItemSlot1" type="VBoxContainer" parent="QuickSlots"]
@@ -64,11 +66,9 @@ theme_override_constants/separation = 8
 
 [node name="Button" type="Button" parent="QuickSlots/ItemSlot1"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 theme_type_variation = &"FlatButton"
 theme_override_styles/normal = SubResource("StyleBoxFlat_ys2uc")
-icon = ExtResource("3_yd32d")
+icon = ExtResource("4_m3sc2")
 
 [node name="Label" type="Label" parent="QuickSlots/ItemSlot1"]
 layout_mode = 2
@@ -86,12 +86,12 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_type_variation = &"FlatButton"
 theme_override_styles/normal = SubResource("StyleBoxFlat_ys2uc")
-icon = ExtResource("3_yd32d")
+icon = ExtResource("4_m3sc2")
 
 [node name="Label" type="Label" parent="QuickSlots/ItemSlot2"]
 layout_mode = 2
 size_flags_vertical = 0
-text = "1"
+text = "2"
 horizontal_alignment = 1
 
 [node name="ItemSlot3" type="VBoxContainer" parent="QuickSlots"]
@@ -104,12 +104,12 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_type_variation = &"FlatButton"
 theme_override_styles/normal = SubResource("StyleBoxFlat_ys2uc")
-icon = ExtResource("3_yd32d")
+icon = ExtResource("4_m3sc2")
 
 [node name="Label" type="Label" parent="QuickSlots/ItemSlot3"]
 layout_mode = 2
 size_flags_vertical = 0
-text = "1"
+text = "3"
 horizontal_alignment = 1
 
 [node name="ItemSlot4" type="VBoxContainer" parent="QuickSlots"]
@@ -122,10 +122,10 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_type_variation = &"FlatButton"
 theme_override_styles/normal = SubResource("StyleBoxFlat_ys2uc")
-icon = ExtResource("3_yd32d")
+icon = ExtResource("4_m3sc2")
 
 [node name="Label" type="Label" parent="QuickSlots/ItemSlot4"]
 layout_mode = 2
 size_flags_vertical = 0
-text = "1"
+text = "4"
 horizontal_alignment = 1
