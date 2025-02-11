@@ -93,7 +93,7 @@ func _ready():
 	rollback_synchronizer.add_input(input, "stance")
 	rollback_synchronizer.add_input(input, "equip")
 
-	weapon = preload("res://scenes/items/Pistol.tscn").instantiate()
+	weapon = preload("res://scenes/items/None.tscn").instantiate()
 	model.equip(weapon)
 	if is_local:
 		model.camera.make_current()
@@ -257,6 +257,8 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	elif stance != Stance.SPRINT:
 		var last_action := action
 		match weapon.kind:
+			Weapon.Kind.NONE:
+				pass
 			Weapon.Kind.MELEE_1H, Weapon.Kind.MELEE_2H:
 				handle_melee_action(delta)
 			Weapon.Kind.PISTOL:

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://n10k5r65s4ek"]
+
+[ext_resource type="Script" path="res://scenes/items/Weapon.gd" id="1_oomiu"]
+
+[node name="None" type="Node3D"]
+script = ExtResource("1_oomiu")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]

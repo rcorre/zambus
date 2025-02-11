@@ -2,6 +2,7 @@ extends Item
 class_name Weapon
 
 enum Kind {
+	NONE,
 	MELEE_1H,
 	MELEE_2H,
 	PISTOL
