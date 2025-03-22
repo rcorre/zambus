@@ -93,7 +93,7 @@ func _ready():
 	rollback_synchronizer.add_input(input, "stance")
 	rollback_synchronizer.add_input(input, "equip")
 
-	weapon = preload("res://scenes/items/None.tscn").instantiate()
+	weapon = preload("res://scenes/items/Pistol.tscn").instantiate()
 	model.equip(weapon)
 	if is_local:
 		model.camera.make_current()
@@ -144,11 +144,13 @@ func equip(idx: int) -> void:
 	if not item:
 		push_warning("Cannot equip", item)
 		return
+	prints("Equipping item in slot", idx, item)
 	weapon = item
 	action = Action.STOW
 
 @rpc("authority", "call_local", "reliable")
 func take_item(item: Item.ID) -> void:
+	prints("Taking item", name)
 	inventory.push_back(item)
 	inventory_changed.emit()
 
@@ -247,6 +249,7 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 			action_progress = 0.0
 			tick_interpolator.teleport()
 			action = Action.DRAW
+			prints("Model equipping", weapon)
 			model.equip(weapon)
 	elif action == Action.DRAW:
 		action_progress += equip_speed() * delta
@@ -341,13 +344,16 @@ func _force_update_is_on_floor():
 	move_and_slide()
 	velocity = old_velocity
 
-func damage():
-	if is_multiplayer_authority():
-		health -= 34
-		prints("%s HP now at %s", [name, health])
+func damage(amount: int, _impact: Vector3):
+	if is_multiplayer_authority() and health > 0:
+		health -= amount
+		if health <= 0:
+			get_tree().create_timer(5.0).timeout.connect(queue_free)
 
 func die():
 	model.die(is_local)
+	collision_layer = 0
+	collision_mask = 0
 
 	if not is_multiplayer_authority():
 		return

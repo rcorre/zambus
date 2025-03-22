@@ -11,6 +11,9 @@ enum ID {
 
 var icon: Texture2D
 
+static func name(id: ID) -> String:
+	return ID.keys()[id]
+
 static func load(item_id: ID) -> Item:
 	var key: String = ID.keys()[item_id]
 	key = key.capitalize().replace(" ", "")
