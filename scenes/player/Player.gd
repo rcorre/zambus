@@ -15,9 +15,6 @@ enum Action {
 	ATTACK,
 	RECOIL,
 	RELOAD,
-	STOW,
-	DRAW,
-	INTERACT,
 }
 
 const ACCEL := 16.0
@@ -28,8 +25,6 @@ const AIM_SPEED := 4.0
 const ATTACK_SPEED := 8.0
 const RELOAD_SPEED := 0.5
 
-signal inventory_changed
-
 @onready var model: PlayerModel = $ThirdPersonModel
 @onready var display_name := $DisplayNameLabel3D as Label3D
 @onready var input := $Input as PlayerInput
@@ -37,7 +32,6 @@ signal inventory_changed
 @onready var rollback_synchronizer := $RollbackSynchronizer as RollbackSynchronizer
 @onready var hitscan: NetworkHitScan = model.camera.get_node("NetworkHitScan")
 
-var inventory: Array[Item.ID]
 var weapon: Weapon
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var health: int = 100
@@ -117,9 +111,6 @@ func recoil_recovery() -> float:
 func aim_speed() -> float:
 	return 8.0
 
-func equip_speed() -> float:
-	return 1.0
-
 func gun_drawn() -> bool:
 	return weapon.is_gun() and action in [Action.AIM, Action.RECOIL]
 
@@ -133,12 +124,6 @@ func _tick(_delta: float, _tick_num: int):
 func _after_tick_loop():
 	if did_respawn:
 		tick_interpolator.teleport()
-
-@rpc("authority", "call_local", "reliable")
-func take_item(item: Item.ID) -> void:
-	prints("Taking item", name)
-	inventory.push_back(item)
-	inventory_changed.emit()
 
 # TODO: setting look in both process and _rollback_tick may not be correct.
 # I'm doing this to have both accurate aiming and a smooth camera.
@@ -218,72 +203,16 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	move_and_slide()
 	velocity /= NetworkTime.physics_factor
 
-	if input.action == Action.INTERACT:
-		if multiplayer.is_server():
-			model.interact_ray.force_raycast_update()
-			var col := model.interact_ray.get_collider() as Pickup
-			if col:
-				col.take.rpc()
-				take_item.rpc(col.item_id)
-	elif action == Action.STOW:
-		action_progress += equip_speed() * delta
-		if action_progress >= 1.0:
-			action_progress = 0.0
-			tick_interpolator.teleport()
-			action = Action.DRAW
-			prints("Model equipping", weapon)
-			model.equip(weapon)
-	elif action == Action.DRAW:
-		action_progress += equip_speed() * delta
-		if action_progress >= 1.0:
-			action_progress = 0.0
-			tick_interpolator.teleport()
-			action = Action.NONE
-	elif stance != Stance.SPRINT:
+	if stance != Stance.SPRINT:
 		var last_action := action
 		match weapon.kind:
 			Weapon.Kind.NONE:
 				pass
-			Weapon.Kind.MELEE_1H, Weapon.Kind.MELEE_2H:
-				handle_melee_action(delta)
 			Weapon.Kind.PISTOL:
 				handle_gun_action(delta)
 		if action != last_action:
 			# we started a new action, so reset interpolation
 			tick_interpolator.teleport()
-
-func handle_melee_action(delta: float):
-	if action == Action.NONE:
-		if input.action == Action.ATTACK and stamina > weapon.stamina_cost:
-			action = Action.AIM
-			action_progress = 0.0
-	elif action_progress >= 1.0:
-		match action:
-			Action.AIM:
-				# Hold the attack "charged" until the attack button is released
-				if input.action != Action.ATTACK:
-					if stamina > weapon.stamina_cost:
-						action = Action.ATTACK
-						action_progress = 0.0
-						stamina -= weapon.stamina_cost
-					else:
-						action = Action.RECOIL
-						action_progress = 0.0
-			Action.ATTACK:
-				hitscan.hitscan(weapon.hitscan_range, 0.0)
-				action = Action.RECOIL
-				action_progress = 0.0
-			Action.RECOIL:
-				action = Action.NONE
-				action_progress = 0.0
-	else:
-		match action:
-			Action.AIM:
-				action_progress += delta * AIM_SPEED
-			Action.ATTACK:
-				action_progress += delta * ATTACK_SPEED
-			Action.RECOIL:
-				action_progress += delta * ATTACK_SPEED
 
 func handle_gun_action(delta: float):
 	if action == Action.NONE:

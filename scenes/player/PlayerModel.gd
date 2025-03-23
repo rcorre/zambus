@@ -42,37 +42,11 @@ func set_action(action: Player.Action, action_progress: float):
 	# action progress should never go outside [0.0, 1.0], but clamp here to be safe
 	var progress := clamp(action_progress, 0.0, 1.0) as float
 
-	if action == Player.Action.STOW:
-		anim.set("parameters/arm_action/transition_request", "equip")
-		return
-
 	match weapon.kind:
-		Weapon.Kind.MELEE_1H, Weapon.Kind.MELEE_2H:
-			handle_melee_action(action, progress)
 		Weapon.Kind.PISTOL:
 			handle_pistol_action(action, progress)
 
 	last_action = action
-
-func handle_melee_action(action: Player.Action, progress: float):
-	# melee is a 1D blend space going from idle (0.0) -> aim (1.0) -> attack (2.0)
-	var blend := 0.0
-	match action:
-		Player.Action.NONE:
-			blend = 0.0
-		Player.Action.AIM:
-			blend = progress
-		Player.Action.ATTACK:
-			weapon.fire()
-			blend = 1.0 + progress
-		Player.Action.RECOIL:
-			blend = 2.0 - progress
-
-	match weapon.kind:
-		Weapon.Kind.MELEE_1H:
-			anim.set("parameters/melee_1h_action/blend_position", blend)
-		Weapon.Kind.MELEE_2H:
-			anim.set("parameters/melee_2h_action/blend_position", blend)
 
 func handle_pistol_action(action: Player.Action, progress: float):
 	# pistol_action is a 1D blend space going from idle (0.0) -> aim (1.0) -> recoil (2.0)
@@ -97,10 +71,6 @@ func handle_pistol_action(action: Player.Action, progress: float):
 
 func arm_action() -> String:
 	match weapon.kind:
-		Weapon.Kind.MELEE_1H:
-			return "melee_1h"
-		Weapon.Kind.MELEE_2H:
-			return "melee_2h"
 		Weapon.Kind.PISTOL:
 			return "pistol"
 	return ""

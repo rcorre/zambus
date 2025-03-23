@@ -67,8 +67,6 @@ func _gather():
 		action = Player.Action.ATTACK
 	elif Input.is_action_pressed("aim"):
 		action = Player.Action.AIM
-	elif Input.is_action_pressed("interact"):
-		action = Player.Action.INTERACT
 	else:
 		action = Player.Action.NONE
 

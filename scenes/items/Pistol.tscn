@@ -113,16 +113,16 @@ tracks/0/use_blend = true
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_rxjje"]
 _data = {
-"RESET": SubResource("Animation_0nc5c"),
-"fire": SubResource("Animation_k5v7o"),
-"reload": SubResource("Animation_k2kx3")
+&"RESET": SubResource("Animation_0nc5c"),
+&"fire": SubResource("Animation_k5v7o"),
+&"reload": SubResource("Animation_k2kx3")
 }
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_eoq02"]
 size = Vector3(0.1, 0.2, 0.3)
 
 [node name="Pistol" instance=ExtResource("1_yh1jx")]
-kind = 3
+kind = 1
 
 [node name="MuzzleFlash" type="MeshInstance3D" parent="." index="1"]
 transform = Transform3D(8.47033e-23, 1.74846e-08, 0.4, 0.4, -1.74846e-08, 7.64274e-16, 1.74846e-08, 0.4, -1.74846e-08, 3.49691e-09, 0.0944856, 0.337571)
@@ -141,7 +141,7 @@ bus = &"Sound"
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." index="3"]
 libraries = {
-"": SubResource("AnimationLibrary_rxjje")
+&"": SubResource("AnimationLibrary_rxjje")
 }
 
 [node name="OmniLight3D" type="OmniLight3D" parent="." index="4"]
