@@ -1,12 +1,12 @@
 [gd_scene load_steps=9 format=3 uid="uid://mp0481s15wtf"]
 
 [ext_resource type="Theme" uid="uid://p4wvcekm5lol" path="res://gui_theme.tres" id="1"]
-[ext_resource type="Script" path="res://menus/title/QuitButton.gd" id="2"]
-[ext_resource type="Script" path="res://menus/title/HostButton.gd" id="3"]
-[ext_resource type="Script" path="res://menus/title/Title.gd" id="4"]
+[ext_resource type="Script" uid="uid://cr5y1ms2bo6f8" path="res://menus/title/QuitButton.gd" id="2"]
+[ext_resource type="Script" uid="uid://b0d7x6chfyxag" path="res://menus/title/HostButton.gd" id="3"]
+[ext_resource type="Script" uid="uid://8o8gv1btlokx" path="res://menus/title/Title.gd" id="4"]
 [ext_resource type="PackedScene" uid="uid://ne4d5ftuw2rs" path="res://menus/SettingsMenu.tscn" id="5"]
-[ext_resource type="Script" path="res://menus/TabSelectButton.gd" id="5_wq6wg"]
-[ext_resource type="Script" path="res://menus/title/JoinButton.gd" id="6"]
+[ext_resource type="Script" uid="uid://dxul8l6hl8lyc" path="res://menus/TabSelectButton.gd" id="5_wq6wg"]
+[ext_resource type="Script" uid="uid://dpwqjcrby21v3" path="res://menus/title/JoinButton.gd" id="6"]
 
 [sub_resource type="FontVariation" id="FontVariation_biyrv"]
 

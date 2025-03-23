@@ -2,6 +2,8 @@ extends BaseNetInput
 class_name PlayerInput
 @export var mouse_sensitivity: float = 0.5
 
+var replay := false
+
 # Local variables
 var override_mouse: bool = false
 var mouse_rotation: Vector2 = Vector2.ZERO
@@ -13,7 +15,14 @@ var look_angle: Vector2 = Vector2.ZERO
 var movement: Vector2 = Vector2.ZERO
 var action: Player.Action
 var stance: Player.Stance
-var equip := -1  # -1 means don't equip anything, non-negative means equip item in that slot number
+
+class Inputs:
+	var look_angle: Vector2 = Vector2.ZERO
+	var movement: Vector2 = Vector2.ZERO
+	var action: Player.Action
+	var stance: Player.Stance
+
+var inputs: Array[Inputs]
 
 func _notification(what):
 	if what == NOTIFICATION_WM_WINDOW_FOCUS_IN:
@@ -21,7 +30,7 @@ func _notification(what):
 		override_mouse = false
 
 func _input(event: InputEvent) -> void:
-	if !is_multiplayer_authority():
+	if replay or !is_multiplayer_authority():
 		return
 
 	var sensitivity := mouse_sensitivity
@@ -38,12 +47,24 @@ func _input(event: InputEvent) -> void:
 		override_mouse = true
 
 func _gather():
+	if replay:
+		var i: Inputs = inputs.pop_back()
+		if not i:
+			look_angle = Vector2.ZERO
+			movement = Vector2.ZERO
+			action = Player.Action.NONE
+			stance = Player.Stance.STAND if stance == Player.Stance.SPRINT else stance
+			return
+		look_angle = i.look_angle
+		movement = i.movement
+		action = i.action
+		stance = i.stance
+		return
+
 	movement = Input.get_vector("left", "right", "forward", "backward")
 
 	if Input.is_action_pressed("attack"):
 		action = Player.Action.ATTACK
-	elif Input.is_action_pressed("reload"):
-		action = Player.Action.RELOAD
 	elif Input.is_action_pressed("aim"):
 		action = Player.Action.AIM
 	elif Input.is_action_pressed("interact"):
@@ -58,20 +79,16 @@ func _gather():
 	else:
 		stance = Player.Stance.STAND
 
-	if Input.is_action_pressed("equip1"):
-		equip = 0
-	elif Input.is_action_pressed("equip2"):
-		equip = 1
-	elif Input.is_action_pressed("equip3"):
-		equip = 2
-	elif Input.is_action_pressed("equip4"):
-		equip = 3
-	else:
-		equip = -1
-
 	if override_mouse:
 		look_angle = Vector2.ZERO
 		mouse_rotation = Vector2.ZERO
 	else:
 		look_angle = Vector2(-mouse_rotation.y * NetworkTime.ticktime, -mouse_rotation.x * NetworkTime.ticktime)
 		mouse_rotation = Vector2.ZERO
+
+	var inp := Inputs.new()
+	inp.look_angle = look_angle
+	inp.movement = movement
+	inp.action = action
+	inp.stance = stance
+	inputs.push_back(inp)

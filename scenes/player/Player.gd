@@ -91,7 +91,6 @@ func _ready():
 	rollback_synchronizer.add_input(input, "movement")
 	rollback_synchronizer.add_input(input, "action")
 	rollback_synchronizer.add_input(input, "stance")
-	rollback_synchronizer.add_input(input, "equip")
 
 	weapon = preload("res://scenes/items/Pistol.tscn").instantiate()
 	model.equip(weapon)
@@ -135,19 +134,6 @@ func _after_tick_loop():
 	if did_respawn:
 		tick_interpolator.teleport()
 
-func equip(idx: int) -> void:
-	if input.equip >= inventory.size():
-		push_warning("Equip request for item", input.equip, "out of range", inventory.size())
-		return
-	var item_id := inventory[idx]
-	var item := Item.load(item_id) as Weapon
-	if not item:
-		push_warning("Cannot equip", item)
-		return
-	prints("Equipping item in slot", idx, item)
-	weapon = item
-	action = Action.STOW
-
 @rpc("authority", "call_local", "reliable")
 func take_item(item: Item.ID) -> void:
 	prints("Taking item", name)
@@ -189,10 +175,6 @@ func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	# Handle look up and down
 	look_y = clamp(look_y + input.look_angle.y, -1.57, 1.57)
 	model.set_look_y(look_y)
-
-	# TODO: should go in tick instead?
-	if input.equip >= 0:
-		equip(input.equip)
 
 	match input.stance:
 		Stance.STAND:

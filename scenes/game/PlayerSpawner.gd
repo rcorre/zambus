@@ -44,7 +44,7 @@ func server_spawn(id: int):
 
 @rpc("authority", "call_local", "reliable")
 func spawn(id: int, pos: Vector3):
-	var player = player_scene.instantiate() as Player
+	var player := player_scene.instantiate() as Player
 	avatars[id] = player
 	player.name += " #%d" % id
 	player.is_local = id == multiplayer.get_unique_id()
@@ -62,9 +62,28 @@ func spawn(id: int, pos: Vector3):
 		input.set_multiplayer_authority(id)
 		print("Set input(%s) ownership to %s" % [input.name, id])
 
+@rpc("authority", "call_local", "reliable")
+func spawn_replay(id: int, pos: Vector3):
+	var player := player_scene.instantiate() as Player
+	var original: Player = avatars[id]
+	add_child(player)
+	player.input.inputs = original.input.inputs.duplicate()
+	player.input.inputs.reverse()
+	player.input.replay = true
+	player.global_position = pos
+
+	player.set_multiplayer_authority(1)
+	print("Spawned replay %s at %s" % [player.name, multiplayer.get_unique_id()])
+
 func get_next_spawn_point(peer_id: int, spawn_idx: int = 0) -> Vector3:
 	var idx := peer_id * 37 + spawn_idx * 19
 	idx = hash(idx)
 	idx = idx % spawn_points.size()
 
 	return spawn_points[idx].position
+
+func _input(event: InputEvent) -> void:
+	var key := event as InputEventKey
+
+	if key and key.keycode == KEY_R and key.pressed:
+		spawn_replay(1, get_next_spawn_point(1, 0))
