@@ -14,7 +14,6 @@ enum Action {
 	AIM,
 	ATTACK,
 	RECOIL,
-	RELOAD,
 }
 
 const ACCEL := 16.0
@@ -23,7 +22,6 @@ const WALK_SPEED := 4.0
 const SPRINT_SPEED := 6.0
 const AIM_SPEED := 4.0
 const ATTACK_SPEED := 8.0
-const RELOAD_SPEED := 0.5
 
 @onready var model: PlayerModel = $ThirdPersonModel
 @onready var display_name := $DisplayNameLabel3D as Label3D
@@ -133,12 +131,6 @@ func _process(_delta: float) -> void:
 	model.set_look_y(look_y)
 	model.set_action(action, action_progress)
 
-	# Highlight focused item for the local player if not performing any action
-	if is_local and action == Action.NONE:
-		var col := model.interact_ray.get_collider() as Pickup
-		if col:
-			col.focused = true
-
 func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
 	# Handle respawn
 	if tick == death_tick:
@@ -219,19 +211,12 @@ func handle_gun_action(delta: float):
 		if input.action == Action.AIM:
 			action = Action.AIM
 			spread = weapon.max_spread
-		elif input.action == Action.RELOAD:
-			action = Action.RELOAD
 	elif action == Action.AIM:
 		if input.action == Action.ATTACK:
-			if ammo > 0:
-				ammo -= 1
-				hitscan.hitscan(weapon.hitscan_range, gun_spread_degrees())
-				spread += weapon.recoil
-				action = Action.RECOIL
-				action_progress = 0.0
-			else:
-				action = Action.RELOAD
-				action_progress = 0.0
+			hitscan.hitscan(weapon.hitscan_range, gun_spread_degrees())
+			spread += weapon.recoil
+			action = Action.RECOIL
+			action_progress = 0.0
 		elif input.action == Action.AIM:
 			action_progress = move_toward(action_progress, 1.0, delta * AIM_SPEED)
 		else:
@@ -242,12 +227,6 @@ func handle_gun_action(delta: float):
 		action_progress += delta * AIM_SPEED
 		if action_progress >= 1.0:
 			action = Action.AIM
-	elif action == Action.RELOAD:
-		action_progress += delta * RELOAD_SPEED
-		if action_progress >= 1.0:
-			ammo = weapon.mag_size
-			action = Action.NONE
-			action_progress = 0.0
 
 func _force_update_is_on_floor():
 	var old_velocity = velocity

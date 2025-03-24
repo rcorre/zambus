@@ -61,13 +61,8 @@ func handle_pistol_action(action: Player.Action, progress: float):
 			anim.set("parameters/pistol_action/blend_position", 2.0 - progress)
 			if action != last_action:
 				weapon.fire()
-		Player.Action.RELOAD:
-			anim.set("parameters/arm_action/transition_request", "equip")
-			if action != last_action:
-				weapon.reload()
 
-	if action != Player.Action.RELOAD:
-		anim.set("parameters/arm_action/transition_request", "pistol")
+	anim.set("parameters/arm_action/transition_request", "pistol")
 
 func arm_action() -> String:
 	match weapon.kind:

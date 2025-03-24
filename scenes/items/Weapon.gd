@@ -26,6 +26,3 @@ func is_gun() -> bool:
 func fire() -> void:
 	anim.stop()
 	anim.play("fire")
-
-func reload() -> void:
-	anim.play("reload")
