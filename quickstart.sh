@@ -18,7 +18,7 @@ GODOT_BIN="godot -d $GODOT_FLAGS"
 
 trap "kill -s TERM 0" SIGINT
 
-$GODOT_BIN test/QuickStart.tscn host $GAME_FLAGS 2>&1 | tee "/tmp/host.log" &
+$GODOT_BIN test/QuickStart.tscn host "$GUEST_COUNT"	$GAME_FLAGS 2>&1 | tee "/tmp/host.log" &
 
 for i in $(seq $GUEST_COUNT); do
 		sleep 1

@@ -33,9 +33,7 @@ const ATTACK_SPEED := 8.0
 var weapon: Weapon
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var health: int = 100
-var death_tick: int = -1
 var respawn_position: Vector3
-var did_respawn := false
 var deaths := 0
 var is_local := false
 
@@ -54,8 +52,7 @@ func _enter_tree():
 func _ready():
 	display_name.text = name
 
-	NetworkTime.on_tick.connect(_tick)
-	NetworkTime.after_tick_loop.connect(_after_tick_loop)
+	NetworkTime.on_tick.connect(_on_tick)
 
 	# Need to interpolate the whole transform (not individual rotations)
 	# otherwise angle wrapping is not handled properly
@@ -70,7 +67,6 @@ func _ready():
 	rollback_synchronizer.add_state(self, "position")
 	rollback_synchronizer.add_state(self, "rotation:y")
 	rollback_synchronizer.add_state(self, "velocity")
-	rollback_synchronizer.add_state(self, "did_respawn")
 	rollback_synchronizer.add_state(self, "look_y")
 	rollback_synchronizer.add_state(self, "stance")
 	rollback_synchronizer.add_state(self, "action")
@@ -112,16 +108,12 @@ func aim_speed() -> float:
 func gun_drawn() -> bool:
 	return weapon.is_gun() and action in [Action.AIM, Action.RECOIL]
 
-func _tick(_delta: float, _tick_num: int):
+func _on_tick(_delta: float, _tick_num: int):
 	model.set_velocity(velocity, stance)
 
 	if health <= 0:
 		deaths += 1
 		die()
-
-func _after_tick_loop():
-	if did_respawn:
-		tick_interpolator.teleport()
 
 # TODO: setting look in both process and _rollback_tick may not be correct.
 # I'm doing this to have both accurate aiming and a smooth camera.
@@ -131,14 +123,7 @@ func _process(_delta: float) -> void:
 	model.set_look_y(look_y)
 	model.set_action(action, action_progress)
 
-func _rollback_tick(delta: float, tick: int, _is_fresh: bool) -> void:
-	# Handle respawn
-	if tick == death_tick:
-		global_position = respawn_position
-		did_respawn = true
-	else:
-		did_respawn = false
-
+func _rollback_tick(delta: float, _tick: int, _is_fresh: bool) -> void:
 	spread = clampf(spread - aim_speed() * delta, weapon.min_spread, weapon.max_spread)
 
 	# Gravity
@@ -249,12 +234,6 @@ func die():
 		return
 
 	prints("%s died", [name])
-	# TODO: handle spawning in parent class
-	@warning_ignore("unsafe_method_access")
-	respawn_position = get_parent().get_next_spawn_point(get_player_id(), deaths)
-	death_tick = NetworkTime.tick
-
-	health = 100
 
 func get_player_id() -> int:
 	return input.get_multiplayer_authority()

@@ -10,7 +10,7 @@ enum Level {
 signal logged(msg, lvl)
 
 func _fmt(msg: Variant) -> String:
-	return "%d (%s): %s" % [Global.current_frame, multiplayer.get_unique_id(), msg]
+	return "%d (%s): %s" % [NetworkTime.tick, multiplayer.get_unique_id(), msg]
 
 func debug(msg: Variant):
 	if OS.is_debug_build():

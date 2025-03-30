@@ -81,23 +81,38 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 1, -21)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 1, 21)
 
 [node name="PlayerSpawns" type="Node" parent="."]
+unique_name_in_owner = true
 
-[node name="Marker3D" type="Marker3D" parent="PlayerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.1705, 1, 0)
+[node name="1" type="Node3D" parent="PlayerSpawns"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 0, 0)
 
-[node name="Marker3D2" type="Marker3D" parent="PlayerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.8295, 1, 0)
+[node name="Marker3D" type="Marker3D" parent="PlayerSpawns/1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
 
-[node name="Marker3D3" type="Marker3D" parent="PlayerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.82951, 1, 16)
+[node name="Marker3D2" type="Marker3D" parent="PlayerSpawns/1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
 
-[node name="Marker3D4" type="Marker3D" parent="PlayerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.17049, 1, -17)
+[node name="Marker3D3" type="Marker3D" parent="PlayerSpawns/1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5)
 
-[node name="Marker3D5" type="Marker3D" parent="PlayerSpawns"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.17049, 1, 0)
+[node name="Marker3D4" type="Marker3D" parent="PlayerSpawns/1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.5)
 
-[node name="Players" type="Node" parent="." node_paths=PackedStringArray("spawn_points")]
+[node name="2" type="Node3D" parent="PlayerSpawns"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 15, 0, 0)
+
+[node name="Marker3D" type="Marker3D" parent="PlayerSpawns/2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.5)
+
+[node name="Marker3D2" type="Marker3D" parent="PlayerSpawns/2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5)
+
+[node name="Marker3D3" type="Marker3D" parent="PlayerSpawns/2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.5)
+
+[node name="Marker3D4" type="Marker3D" parent="PlayerSpawns/2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.5)
+
+[node name="Players" type="Node" parent="."]
 script = ExtResource("3_c7rxg")
 player_scene = ExtResource("2_p13fk")
-spawn_points = [NodePath("../PlayerSpawns/Marker3D"), NodePath("../PlayerSpawns/Marker3D2"), NodePath("../PlayerSpawns/Marker3D3"), NodePath("../PlayerSpawns/Marker3D4"), NodePath("../PlayerSpawns/Marker3D5")]
