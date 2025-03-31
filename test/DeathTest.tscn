@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://chu0b4oiew2ut"]
 
-[ext_resource type="Script" path="res://test/DeathTest.gd" id="1_ikwke"]
-[ext_resource type="PackedScene" uid="uid://viupvwuisje3" path="res://scenes/zombie/ZombieModel.tscn" id="1_k3r0e"]
+[ext_resource type="Script" uid="uid://djtie0dkr36mk" path="res://test/DeathTest.gd" id="1_ikwke"]
+[ext_resource type="PackedScene" uid="uid://d3hwsol6r31w5" path="res://scenes/player/PlayerModel.tscn" id="2_46o2r"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_egrkr"]
 
@@ -9,8 +9,6 @@
 
 [node name="DeathTest" type="Node3D"]
 script = ExtResource("1_ikwke")
-
-[node name="ZombieModel" parent="." instance=ExtResource("1_k3r0e")]
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 5)
@@ -22,3 +20,5 @@ mesh = SubResource("PlaneMesh_egrkr")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
 shape = SubResource("WorldBoundaryShape3D_fpqxw")
+
+[node name="ThirdPersonModel" parent="." instance=ExtResource("2_46o2r")]
