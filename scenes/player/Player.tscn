@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://vrso6qncj1nm"]
+[gd_scene load_steps=7 format=3 uid="uid://vrso6qncj1nm"]
 
 [ext_resource type="Script" uid="uid://dbar2kst1gx7c" path="res://addons/netfox/rollback/rollback-synchronizer.gd" id="1_g0p7o"]
 [ext_resource type="Script" uid="uid://dew7btucs5p6y" path="res://scenes/player/Player.gd" id="1_mk8qw"]
@@ -7,17 +7,6 @@
 [ext_resource type="Script" uid="uid://cjayv5xu6r0ev" path="res://scenes/player/PlayerInput.gd" id="10_50d5g"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6kydi"]
-
-[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_70css"]
-properties/0/path = NodePath(".:health")
-properties/0/spawn = true
-properties/0/replication_mode = 2
-properties/1/path = NodePath(".:death_tick")
-properties/1/spawn = true
-properties/1/replication_mode = 2
-properties/2/path = NodePath(".:respawn_position")
-properties/2/spawn = true
-properties/2/replication_mode = 2
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_mk8qw")
@@ -36,9 +25,6 @@ shape = SubResource("CapsuleShape3D_6kydi")
 [node name="RollbackSynchronizer" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("1_g0p7o")
 root = NodePath("..")
-
-[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
-replication_config = SubResource("SceneReplicationConfig_70css")
 
 [node name="TickInterpolator" type="Node" parent="." node_paths=PackedStringArray("root")]
 script = ExtResource("2_3rc26")

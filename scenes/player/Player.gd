@@ -33,8 +33,6 @@ const ATTACK_SPEED := 8.0
 var weapon: Weapon
 var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var health: int = 100
-var respawn_position: Vector3
-var deaths := 0
 var is_local := false
 
 # Rollback properties
@@ -43,7 +41,6 @@ var stance: Stance
 var action: Action
 var action_progress := 0.0
 var stamina := 100.0
-var ammo := 0
 var spread := 0.0
 
 func _enter_tree():
@@ -72,7 +69,6 @@ func _ready():
 	rollback_synchronizer.add_state(self, "action")
 	rollback_synchronizer.add_state(self, "action_progress")
 	rollback_synchronizer.add_state(self, "stamina")
-	rollback_synchronizer.add_state(self, "ammo")
 	rollback_synchronizer.add_state(self, "spread")
 
 	rollback_synchronizer.add_input(input, "look_angle")
@@ -112,7 +108,6 @@ func _on_tick(_delta: float, _tick_num: int):
 	model.set_velocity(velocity, stance)
 
 	if health <= 0:
-		deaths += 1
 		die()
 
 # TODO: setting look in both process and _rollback_tick may not be correct.
