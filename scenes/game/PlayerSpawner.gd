@@ -91,7 +91,7 @@ func spawn_replay(id: int, pos: Vector3, round_idx: int):
 	add_child(player)
 	if multiplayer.is_server():
 		var inputs: Array[PlayerInput.Inputs] = past_inputs[id][round_idx]
-		player.input.inputs = inputs
+		player.input.inputs = inputs.duplicate()
 		player.input.inputs.reverse()
 		player.input.replay = true
 	player.global_position = pos
