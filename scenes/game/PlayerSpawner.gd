@@ -54,9 +54,11 @@ func start_round() -> void:
 		input.reverse()
 		inputs.push_back(input)
 		Log.info("Pushed past input for player %d" % id)
-	avatars.clear()
-	for c in get_children():
-		c.queue_free()
+
+	clear_players.rpc()
+
+	# Let all the freed players be removed
+	await get_tree().physics_frame
 
 	Log.info("Spawning replays")
 	for id in PackedInt32Array([multiplayer.get_unique_id()]) + multiplayer.get_peers():
@@ -70,17 +72,24 @@ func start_round() -> void:
 
 	current_round += 1
 
-func get_spawn_point(id: int, round_idx: int) -> Vector3:
-	return spawn_points[id][round_idx].origin
+func get_spawn_point(id: int, round_idx: int) -> Transform3D:
+	return spawn_points[id][round_idx]
+
+@rpc("authority", "call_local", "reliable")
+func clear_players():
+	avatars.clear()
+	for c in get_children():
+		c.queue_free()
 
 @rpc("authority", "call_local", "reliable")
 func spawn(id: int, round_idx: int):
 	var player := player_scene.instantiate() as Player
 	avatars[id] = player
-	player.name += " #%d" % id
+	player.name = "Player%d.%d" % [id, round_idx]
 	player.is_local = id == multiplayer.get_unique_id()
+	assert(!has_node(NodePath(player.name)))
 	add_child(player as Node)
-	player.global_position = get_spawn_point(id, round_idx)
+	player.global_transform = get_spawn_point(id, round_idx)
 
 	# Avatar is always owned by server
 	player.set_multiplayer_authority(1)
@@ -96,13 +105,15 @@ func spawn(id: int, round_idx: int):
 @rpc("authority", "call_local", "reliable")
 func spawn_replay(id: int, round_idx: int):
 	var player := player_scene.instantiate() as Player
+	player.name = "Replay%d.%d" % [id, round_idx]
+	assert(!has_node(NodePath(player.name)))
 	add_child(player)
 	if multiplayer.is_server():
 		var inputs: Array[PlayerInput.Inputs] = past_inputs[id][round_idx]
 		player.input.inputs = inputs.duplicate()
 		player.input.inputs.reverse()
 		player.input.replay = true
-	player.global_position = get_spawn_point(id, round_idx)
+	player.global_transform = get_spawn_point(id, round_idx)
 
 	player.set_multiplayer_authority(1)
 	print("Spawned replay %s at %s" % [player.name, multiplayer.get_unique_id()])

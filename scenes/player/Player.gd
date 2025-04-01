@@ -228,7 +228,7 @@ func die():
 	if not is_multiplayer_authority():
 		return
 
-	prints("%s died", [name])
+	Log.info("%s died" % name)
 
 func get_player_id() -> int:
 	return input.get_multiplayer_authority()
