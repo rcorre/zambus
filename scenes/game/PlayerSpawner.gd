@@ -1,8 +1,9 @@
 extends Node
 class_name PlayerSpawner
 
+const ROUND_COUNT := 4
+
 @export var player_scene: PackedScene
-@onready var spawns := %PlayerSpawns
 
 # network_id->[][]Inputs
 var past_inputs: Dictionary = {}
@@ -10,13 +11,27 @@ var past_inputs: Dictionary = {}
 # network_id->Player
 var avatars: Dictionary = {}
 
-func _ready():
-	if not multiplayer.is_server():
-		return
+# network_id->Array[Transform3D]
+var spawn_points: Dictionary = {}
 
-	NetworkEvents.on_peer_leave.connect(_handle_leave)
-	NetworkEvents.on_client_stop.connect(_handle_stop)
-	NetworkEvents.on_server_stop.connect(_handle_stop)
+var current_round := 0
+
+func _ready():
+	var all_spawns := %PlayerSpawns.get_children()
+	var ids := PackedInt32Array([multiplayer.get_unique_id()]) + multiplayer.get_peers()
+	if ids.size() > all_spawns.size():
+		push_error("%d spawns is not enough for %d players" % [all_spawns.size(), ids.size()])
+	for id in ids:
+		var spawns: Node3D = all_spawns.pop_front()
+		var points: Array[Transform3D]
+		for s in spawns.get_children():
+			points.push_back((s as Node3D).global_transform)
+		spawn_points[id] = points
+
+	if multiplayer.is_server():
+		NetworkEvents.on_peer_leave.connect(_handle_leave)
+		NetworkEvents.on_client_stop.connect(_handle_stop)
+		NetworkEvents.on_server_stop.connect(_handle_stop)
 
 func _handle_leave(_id: int) -> void:
 	# TODO
@@ -27,6 +42,10 @@ func _handle_stop() -> void:
 	return
 
 func start_round() -> void:
+	if current_round == ROUND_COUNT:
+		Log.info("Game over")
+		return
+
 	Log.info("Collecting past inputs")
 	for id in avatars:
 		var inputs: Array = past_inputs.get_or_add(id, [])
@@ -40,39 +59,28 @@ func start_round() -> void:
 		c.queue_free()
 
 	Log.info("Spawning replays")
-	var player_idx := 0
 	for id in PackedInt32Array([multiplayer.get_unique_id()]) + multiplayer.get_peers():
-		var inputs: Array = past_inputs.get(id, [])
-		var points := spawns.get_child(player_idx)
-		for round_idx in inputs.size():
-			Log.info("Spawning replay %d for player %d" % [round_idx, player_idx])
-			var pos := (points.get_child(round_idx) as Node3D).global_transform
-			spawn_replay.rpc(id, pos.origin, round_idx)
-		player_idx += 1
+		for round_idx in range(current_round):
+			Log.info("Spawning replay %d for player %d" % [round_idx, id])
+			spawn_replay.rpc(id, round_idx)
 
 	Log.info("Spawning players")
-	player_idx = 0
 	for id in PackedInt32Array([multiplayer.get_unique_id()]) + multiplayer.get_peers():
-		var points := spawns.get_child(player_idx)
-		player_idx += 1
-		var inputs: Array = past_inputs.get(id, [])
-		var round_idx := inputs.size()
-		if round_idx >= points.get_child_count():
-			Log.info("Game over")
-			return
-		var pos := (points.get_child(round_idx) as Node3D).global_transform
-		prints(id, pos)
-		spawn.rpc(id, pos.origin)
+		spawn.rpc(id, current_round)
+
+	current_round += 1
+
+func get_spawn_point(id: int, round_idx: int) -> Vector3:
+	return spawn_points[id][round_idx].origin
 
 @rpc("authority", "call_local", "reliable")
-func spawn(id: int, pos: Vector3):
-	prints(id, pos)
+func spawn(id: int, round_idx: int):
 	var player := player_scene.instantiate() as Player
 	avatars[id] = player
 	player.name += " #%d" % id
 	player.is_local = id == multiplayer.get_unique_id()
 	add_child(player as Node)
-	player.global_position = pos
+	player.global_position = get_spawn_point(id, round_idx)
 
 	# Avatar is always owned by server
 	player.set_multiplayer_authority(1)
@@ -86,7 +94,7 @@ func spawn(id: int, pos: Vector3):
 		print("Set input(%s) ownership to %s" % [input.name, id])
 
 @rpc("authority", "call_local", "reliable")
-func spawn_replay(id: int, pos: Vector3, round_idx: int):
+func spawn_replay(id: int, round_idx: int):
 	var player := player_scene.instantiate() as Player
 	add_child(player)
 	if multiplayer.is_server():
@@ -94,7 +102,7 @@ func spawn_replay(id: int, pos: Vector3, round_idx: int):
 		player.input.inputs = inputs.duplicate()
 		player.input.inputs.reverse()
 		player.input.replay = true
-	player.global_position = pos
+	player.global_position = get_spawn_point(id, round_idx)
 
 	player.set_multiplayer_authority(1)
 	print("Spawned replay %s at %s" % [player.name, multiplayer.get_unique_id()])
